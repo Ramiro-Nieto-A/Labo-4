@@ -1,0 +1,72 @@
+% This is my favourite config for bibliography. Each one of the references can be briefly explained with the field "note".
+\RequirePackage[style=spanish]{csquotes}
+\RequirePackage[
+  backend=biber,
+  style=ieee,
+  sorting=none,
+  citestyle=numeric
+]{biblatex}
+
+\addbibresource{bibl.bib}
+
+\nocite{*}
+
+
+
+% Hyperref always required last one.
+\RequirePackage{hyperref}
+\makeatletter
+\hypersetup{%
+  hidelinks,
+  pdfstartview=Fit,%
+  pdfmenubar=true,%
+  pdftoolbar=true,%
+  bookmarksopen=false,%
+  pdftitle={\@docsubtitle},%
+  pdfauthor={\templateauthor},%
+  pdfsubject={\@doctitle},%
+  pdflang={\languagename},%
+  pdfkeywords={mathematics},%
+  pdfproducer={pdfTeX}}
+\makeatother
+
+% Setting up the titlepage.
+\makeatletter%
+\title{{\large\textit{\@doctitle}}\\[0.5cm]{\Huge\color{gray}\textsc{\@docsubtitle}}}%
+\makeatother%
+\date{\today}
+
+
+%\usepackage[table,xcdraw]{xcolor}
+\usepackage{colortbl} % instead of \usepackage[table,xcdraw]{xcolor}
+
+
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codeframe}{RGB}{200,200,200}
+\definecolor{codeblue}{RGB}{0,90,160}
+\definecolor{codegreen}{RGB}{0,120,0}
+\definecolor{codegray}{RGB}{120,120,120}
+\definecolor{codepurple}{RGB}{120,0,120}
+
+\lstdefinestyle{mystyle}{
+    language=Python,
+    backgroundcolor=\color{white},
+    basicstyle=\ttfamily\footnotesize\color{black},
+    keywordstyle=\color{codeblue}\bfseries,
+    commentstyle=\color{codegreen},
+    stringstyle=\color{codepurple},
+    identifierstyle=\color{black},
+    numbers=left,
+    numberstyle=\tiny\color{codegray},
+    frame=single,
+    rulecolor=\color{codeframe},
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=4,
+    captionpos=b
+}
+
+\lstset{style=mystyle}

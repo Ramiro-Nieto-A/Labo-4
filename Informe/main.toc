@@ -1,0 +1,9 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {section}{\numberline {1}Introducción}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Resumen}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Presentación de los resultados}{3}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Ejercicio 1: Filtro anti-alias}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Diseño de filtro}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Implementación del sistema \& verificación empírica del funcionamiento}{6}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Tiempo de procesamiento}{8}{subsection.2.3}%
+\contentsline {section}{Referencias}{9}{table.caption.7}%

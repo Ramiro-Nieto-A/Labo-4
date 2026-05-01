@@ -1,0 +1,140 @@
+%%% Here is the class with everything we need, if you don't want, you don't have to take a look at it, as it will probably cover your needs by far. These three options are used after the class article, which this template is based in.
+% Twoside will act as an special parameter, because if the document is twosided indeed, headers and footers will be adapted in consequence.
+% I recently added the language parameter to change it more easily, so the label of all theorems are redefined accordingly, depending on which is used. Disclaimer: only available for Catalan, English and Spanish. If no language is selected, English is enforced.
+
+
+% \documentclass[a4paper,12pt,oneside,catalan]{all-in-one} %% ONESIDE
+\documentclass[a4paper,12pt,twoside,spanish]{all-in-one} %% TWOSIDE
+
+% Here is the font I usually use, it can be changed of course.
+% In that case, these next two lines have to be deleted.
+%\usepackage{ebgaramond}
+
+% Equations have the same font.
+%\usepackage[cmintegrals,cmbraces,ebgaramond]{newtxmath}
+
+\usepackage{subcaption}
+
+\usepackage{xcolor}
+\definecolor{carnelian}{rgb}{0.7, 0.1, 0}
+\definecolor{cinnabar}{rgb}{0.89, 0.26, 0.2}
+
+
+
+\DeclareCaptionLabelFormat{boldfigure}{\textbf{#1 #2}}
+\captionsetup{
+    font=footnotesize,               % Tamaño de la fuente
+    labelformat=simple,       % Formato de la etiqueta (ej. "Figura 1")
+    labelformat=boldfigure,
+    labelsep=colon,           % Separador entre la etiqueta y el texto
+    textfont=it,              % Texto en negrita
+}
+\usepackage{booktabs}
+\usepackage{hyperref} %lo puse yo para los mails
+\usepackage{amssymb} %para el \approx
+\usepackage{wrapfig} %para las imagenes en el texto
+\usepackage[american]{circuitikz}
+\usepackage{float}  
+\hypersetup{
+    colorlinks=true,
+    linkcolor=carnelian, % Color para enlaces internos
+    urlcolor=carnelian,   % Color para enlaces URL
+    citecolor=carnelian, % Color para citas bibliográficas
+}
+
+\doctitle{Laboratorio de Electrónica III | 25.24}
+\docsubtitle{TPL 4}
+
+\author{ Ramiro Nieto Abascal  \\  \color{carnelian}{\fontsize{12pt}{12pt}\selectfont \href{rnietoabascal@itba.edu.ar}{rnietoabascal@itba.edu.ar}}}
+
+% A text that goes into the footer. You can even include a logo. It can be left blank, too.
+%% Option 1: \footext{\includegraphics[width=2em]{titlepage.png}}
+%% Option 2: \footext{\copyright\ \the\year by Cookie Monster}
+% What I usually use: 
+%\footext{}
+
+\footext{\includegraphics[width=4em]{Imagenes/logo.png}}
+% Don't comment the command below if it's not of much inconvenience, please!
+%\greetings
+% Licensing on every page? Comment if you don't want it.
+% \licensing
+
+% Last things
+\input{preamble}
+
+\usepackage{gensymb}
+
+% Dummy text
+\usepackage{lipsum}
+%\usepackage{blindtext}% only for dummy text
+
+\usepackage{listings}
+\usepackage{xcolor} % Para definir colores
+\lstset{
+    language=Python,
+    backgroundcolor=\color{white},
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=10pt,
+    showstringspaces=false,
+    breaklines=true
+}
+
+\newlength{\myspace}
+\setlength{\myspace}{1pt}  % Puedes cambiar 5pt por cualquier valor que desees
+\setlength{\textfloatsep}{\myspace}
+\setlength{\abovecaptionskip}{\myspace} % Espacio por encima del caption
+\setlength{\belowcaptionskip}{\myspace} % Espacio por debajo del caption
+\setlength{\intextsep}{\myspace}        % Espacio alrededor de las tablas en línea con el texto
+\linespread{0.96}  % Default is 1.0, less than 1 reduces line spacing
+\linespread{0.7} % Reduce el interlineado
+\begin{document}
+
+% Interlineate, it can be changed.
+\setlength{\baselineskip}{.66cm}
+
+%%%%%%%%% ESPACIO DEL DISPLAY %%%%%%%%%%%%%
+%\setlength{\abovedisplayskip}{1pt}
+%\setlength{\belowdisplayskip}{1pt}
+%\setlength{\abovedisplayshortskip}{1pt}
+%\setlength{\belowdisplayshortskip}{1pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{titlepage}
+\maketitle
+\vfill
+\centering\includegraphics[width=10em]{Imagenes/titlepage.png}
+%\doclicenseThis
+% Very important, regarding page numbering. Keep in mind differences between oneside and twoside
+\thispagestyle{empty}
+\end{titlepage}
+
+% Table of contents
+\thispagestyle{plain}
+\tableofcontents
+\newpage
+\pagestyle{\defaultsettings}
+
+%SECCIONES
+\input{Secciones/0_Introduccion}
+\newpage
+\input{Secciones/1_LPF_AL.tex}
+
+%ANEXOS
+\appendix
+
+
+
+
+% Bibliography
+\clearpage
+\pagestyle{\auxsettings}
+\printbibliography[heading=bibintoc]
+
+\end{document}
+
