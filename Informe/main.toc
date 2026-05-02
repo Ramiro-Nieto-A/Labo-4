@@ -6,4 +6,10 @@
 \contentsline {subsection}{\numberline {2.1}Diseño de filtro}{4}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Implementación del sistema \& verificación empírica del funcionamiento}{6}{subsection.2.2}%
 \contentsline {subsection}{\numberline {2.3}Tiempo de procesamiento}{8}{subsection.2.3}%
-\contentsline {section}{Referencias}{9}{table.caption.7}%
+\contentsline {section}{\numberline {3}Ejercicio 2: filtrado por convolución}{9}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Overlap and save}{10}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Implementación}{12}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Analizador de THD}{14}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Diseño de bloques}{14}{subsection.4.1}%
+\contentsline {subsubsection}{\numberline {4.1.1}Filtro comb}{14}{subsubsection.4.1.1}%
+\contentsline {section}{Referencias}{16}{equation.4}%

@@ -1,0 +1,175 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{TL082_TI}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=98891ef37ae74f3a00ae9a7c9c316e78}{%
+           family={Instruments},
+           familyi={I\bibinitperiod},
+           given={Texas},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{98891ef37ae74f3a00ae9a7c9c316e78}
+      \strng{fullhash}{98891ef37ae74f3a00ae9a7c9c316e78}
+      \strng{fullhashraw}{98891ef37ae74f3a00ae9a7c9c316e78}
+      \strng{bibnamehash}{98891ef37ae74f3a00ae9a7c9c316e78}
+      \strng{authorbibnamehash}{98891ef37ae74f3a00ae9a7c9c316e78}
+      \strng{authornamehash}{98891ef37ae74f3a00ae9a7c9c316e78}
+      \strng{authorfullhash}{98891ef37ae74f3a00ae9a7c9c316e78}
+      \strng{authorfullhashraw}{98891ef37ae74f3a00ae9a7c9c316e78}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Último acceso: marzo de 2025}
+      \field{title}{TL082 Wide Bandwidth JFET-Input Operational Amplifier Datasheet}
+      \field{year}{s.f.}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://www.ti.com/lit/ds/symlink/tl082.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.ti.com/lit/ds/symlink/tl082.pdf
+      \endverb
+    \endentry
+    \entry{Middlebrook_LoopGain}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=76fd4278d7e507a7de98e37a2b2de1a7}{%
+           family={Middlebrook},
+           familyi={M\bibinitperiod},
+           given={R.\bibnamedelimi D.},
+           giveni={R\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \strng{namehash}{76fd4278d7e507a7de98e37a2b2de1a7}
+      \strng{fullhash}{76fd4278d7e507a7de98e37a2b2de1a7}
+      \strng{fullhashraw}{76fd4278d7e507a7de98e37a2b2de1a7}
+      \strng{bibnamehash}{76fd4278d7e507a7de98e37a2b2de1a7}
+      \strng{authorbibnamehash}{76fd4278d7e507a7de98e37a2b2de1a7}
+      \strng{authornamehash}{76fd4278d7e507a7de98e37a2b2de1a7}
+      \strng{authorfullhash}{76fd4278d7e507a7de98e37a2b2de1a7}
+      \strng{authorfullhashraw}{76fd4278d7e507a7de98e37a2b2de1a7}
+      \field{extraname}{1}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{International Journal of Electronics, Vol. 38, No. 4, pp. 485--512. Último acceso: marzo de 2025}
+      \field{title}{Measurement of Loop Gain in Feedback Systems}
+      \field{year}{1975}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://www.venableinstruments.com/hubfs/Middlebrook_Measurement%20of%20loop%20gain%20in%20feedback%20systems.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.venableinstruments.com/hubfs/Middlebrook_Measurement%20of%20loop%20gain%20in%20feedback%20systems.pdf
+      \endverb
+    \endentry
+    \entry{Middlebrook_GFT}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=76fd4278d7e507a7de98e37a2b2de1a7}{%
+           family={Middlebrook},
+           familyi={M\bibinitperiod},
+           given={R.\bibnamedelimi D.},
+           giveni={R\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \strng{namehash}{76fd4278d7e507a7de98e37a2b2de1a7}
+      \strng{fullhash}{76fd4278d7e507a7de98e37a2b2de1a7}
+      \strng{fullhashraw}{76fd4278d7e507a7de98e37a2b2de1a7}
+      \strng{bibnamehash}{76fd4278d7e507a7de98e37a2b2de1a7}
+      \strng{authorbibnamehash}{76fd4278d7e507a7de98e37a2b2de1a7}
+      \strng{authornamehash}{76fd4278d7e507a7de98e37a2b2de1a7}
+      \strng{authorfullhash}{76fd4278d7e507a7de98e37a2b2de1a7}
+      \strng{authorfullhashraw}{76fd4278d7e507a7de98e37a2b2de1a7}
+      \field{extraname}{2}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Circuits and Systems Exposition (Review Version). Último acceso: marzo de 2026}
+      \field{title}{The GFT: A General Yet Practical Feedback Theorem}
+      \field{year}{2002}
+      \true{nocite}
+      \verb{urlraw}
+      \verb http://rdmiddlebrook.com/wp-content/uploads/2014/05/The-GFT.pdf
+      \endverb
+      \verb{url}
+      \verb http://rdmiddlebrook.com/wp-content/uploads/2014/05/The-GFT.pdf
+      \endverb
+    \endentry
+    \entry{Tian_Stability_LoopBased}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=ae6bf438e846527ae09c9f68ffb53918}{%
+           family={Tian},
+           familyi={T\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod}}}%
+        {{hash=acd340909d3b4c8c662c638ac5173a1e}{%
+           family={Visvanathan},
+           familyi={V\bibinitperiod},
+           given={V.},
+           giveni={V\bibinitperiod}}}%
+        {{hash=d73525dd6bb441064c0307fd99038fd5}{%
+           family={Hantgan},
+           familyi={H\bibinitperiod},
+           given={Jeffrey},
+           giveni={J\bibinitperiod}}}%
+        {{hash=dc2f56386ad933b2a0efc64b84f70c71}{%
+           family={Kundert},
+           familyi={K\bibinitperiod},
+           given={Kenneth},
+           giveni={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{b908a29cc3e7eb01410f2b161eed7d58}
+      \strng{fullhash}{0e7adadefb9f17202065a1222c720d1c}
+      \strng{fullhashraw}{0e7adadefb9f17202065a1222c720d1c}
+      \strng{bibnamehash}{0e7adadefb9f17202065a1222c720d1c}
+      \strng{authorbibnamehash}{0e7adadefb9f17202065a1222c720d1c}
+      \strng{authornamehash}{b908a29cc3e7eb01410f2b161eed7d58}
+      \strng{authorfullhash}{0e7adadefb9f17202065a1222c720d1c}
+      \strng{authorfullhashraw}{0e7adadefb9f17202065a1222c720d1c}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Circuits and Devices Magazine}
+      \field{month}{1}
+      \field{note}{Último acceso: marzo de 2025}
+      \field{number}{1}
+      \field{title}{Striving for Small-Signal Stability: Loop-Based and Device-Based Algorithms for Stability Analysis of Linear Analog Circuits in the Frequency Domain}
+      \field{volume}{17}
+      \field{year}{2001}
+      \true{nocite}
+      \field{pages}{31\bibrangedash 41}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.1109/101.900125
+      \endverb
+      \verb{urlraw}
+      \verb https://ieeexplore.ieee.org/document/900125/
+      \endverb
+      \verb{url}
+      \verb https://ieeexplore.ieee.org/document/900125/
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
