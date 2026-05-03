@@ -1,4 +1,4 @@
-\section{Analizador de THD}
+\section{Ejercicio 3: Analizador de THD}
 Se requiere diseñar un dispositivo de submetering que calcule en tiempo real
 el THD de la tensión de línea de una subestación eléctrica. 
 
@@ -49,3 +49,250 @@ y_1[n] = \alpha x[n] + \beta y_1[n-k]
 \end{equation}
 
 \noindent resolviendo el sistema de ecuaciones se obtiene $\alpha = 2/11$ y $\beta = 9/11$.
+
+En función de los parámetros obtenidos puede graficarse la respuesta en frecuencia asociada:
+
+\vspace{0.5cm}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = 0.7\textwidth]{Imagenes/3_THD/com_rta_en_frec.png}
+  \caption{Módulo de respuesta en frecuencia de filtro comb.}
+  \label{fig: Modulo de respuesta en frecuencia de filtro comb}
+\end{figure}
+
+\subsubsection{Pasa-bajos | Recuperación de primeros 10 armónicos}
+En segundo lugar se debe diseñar un filtro pasa-bajos tal que se recuperen los primeros 10 armónicos, donde la atenuación subsecuente ha de ser de al menos 20dB. Para lograr este acometido se ha de diseñar un filtro FIR mediante el método de la serie de Fourier (análogo al ejercicio 1). En función de ello se ha de decidir la ventana óptima para la tarea.
+
+En este caso particular la decisión es más compleja que las circunstancias planteadas para el ejercicio 1. Por un lado se ha de considerar que la ganancia en la banda de atenuación no es tan restrictiva como lo fue en el primer caso. Una atenuación de 20dB es lo suficientemente pequeña tal que se pueda emplear una ventana rectangular, por lo que potencialmente se puede aprovechar la gran caída de la misma para optimizar el número de taps que ha de disponer el filtro. Sin embargo, esta ventana dispone de un problema fundamental: el fenómeno de Gibbs. La respuesta en frecuencia presenta oscilaciones en la banda pasante. Estas oscilaciones potencialmente pueden llegar a ser críticas para el cálculo del THD, dado que en el esquema de la Figura \ref{fig: esquema gral a implementar} no se dispone de un método para discernir de los armónicos y compensar esta atenuación. En función de ello se puede decidir optar por otra ventana que no disponga de esta problemática, como puede ser una ventana de Hamming. Esta ventana no dispone de estas oscilaciones pronunciadas, sin embargo el número de taps a emplear potencialmente crece drásticamente respecto de la primera opción. En función de ello se sugiere el uso de una tercera opción que no fue analizada en el primer ejercicio: la ventana de Kaiser. Esta ventana dispone de un parámetro adicional ($\beta$), que le confiere un grado de libertad que permite ajustar la ciada y atenuación del lóbulo lateral. De este modo podemos intentar encontrar un punto intermedio entre los beneficios que confieren las ventanas previamente mencionadas, optimizando para nuestro beneficio.
+
+En función de ello se realizó un código en Python tal que se trimmeo el número de taps y $\beta$ (en el caso de la ventana de Kaiser), con tal de cumplir las especificaciones requeridas. Para la frecuencia de cruce que requiere como parámetro de entrada la función \emph{signal.firwin()} se empleó fc=525Hz (notar que si se usa 500Hz potencialmente se estaría incurriendo en un error al atenuar un armónico relevante para el cálculo del THD). De este modo se obtuvieron:
+
+\begin{table}[H]
+\centering
+\caption{Parámetros de diseño finales para el filtro pasabajos $y_2[n]$ ($f_c = 530\text{Hz}$)}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Ventana} & \textbf{Orden ($N$)} & \textbf{Parámetro Extra} & \textbf{Retardo de Grupo ($N/2$)} \\
+\midrule
+Rectangular & 221 & - & 110.5 muestras \\
+Hamming     & 451 & - & 225.5 muestras \\
+\textbf{Kaiser} & \textbf{281} & \boldmath$\beta = 1.8$ & \textbf{140.5 muestras} \\
+\bottomrule
+\end{tabular}
+\label{tab:diseno_final_taps}
+\end{table}
+
+
+\noindent que se condice con las siguientes respuestas en frecuencia:
+
+\vspace{0.5cm}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = 0.7\textwidth]{Imagenes/3_THD/LP_10H.png}
+  \caption{Módulo de respuesta en frecuencia de filtro pasa-bajos.}
+  \label{fig: Modulo de respuesta en frecuencia de filtro pasa-bajos}
+\end{figure}
+
+\noindent En este contexto es relevante las ganancias en las frecuencias de interes:
+
+\begin{table}[H]
+\centering
+\caption{Comparativa de ganancia lineal en los armónicos según el tipo de ventana ($f_s = 10\text{kHz}$)}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Armónico} & \textbf{Frecuencia [Hz]} & \textbf{Rectangular} & \textbf{Hamming} & \textbf{Kaiser} \\
+\midrule
+H1  & 50  & 1.0201 & 1.0001 & 0.9921 \\
+H2  & 100 & 1.0036 & 1.0005 & 0.9880 \\
+H3  & 150 & 1.0131 & 1.0008 & 0.9985 \\
+H4  & 200 & 1.0136 & 1.0007 & 0.9976 \\
+H5  & 250 & 1.0008 & 1.0004 & 0.9860 \\
+H6  & 300 & 1.0274 & 0.9998 & 0.9931 \\
+H7  & 350 & 0.9862 & 0.9995 & 1.0049 \\
+H8  & 400 & 1.0420 & 0.9998 & 0.9885 \\
+H9  & 450 & 0.9733 & 1.0004 & 0.9735 \\
+H10 & 500 & 1.0366 & 0.9478 & 1.0013 \\
+\midrule
+\rowcolor[gray]{0.9} \textbf{H11} & \textbf{550} & \textbf{0.0998} & \textbf{0.0524} & \textbf{0.0986} \\
+H12 & 600 & 0.0020 & 0.0002 & 0.0205 \\
+\bottomrule
+\end{tabular}
+\label{tab:comparativa_ganancias}
+\end{table}
+
+
+\noindent de donde es posible extraer el error que se esta cometiendo debido a las oscilaciones y/o la ganancia en el último armónico:
+
+
+\begin{table}[H]
+\centering
+\caption{Análisis de error porcentual en la banda de paso por efecto de rizado}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Armónico} & \textbf{Err. Rect [\%]} & \textbf{Err. Hamm [\%]} & \textbf{Err. Kais [\%]} \\
+\midrule
+H1  & 2.01 & 0.01 & 0.79 \\
+H2  & 0.36 & 0.05 & 1.20 \\
+H3  & 1.31 & 0.08 & 0.15 \\
+H4  & 1.36 & 0.07 & 0.24 \\
+H5  & 0.08 & 0.04 & 1.40 \\
+H6  & 2.74 & 0.02 & 0.69 \\
+H7  & 1.38 & 0.05 & 0.49 \\
+H8  & 4.20 & 0.02 & 1.15 \\
+H9  & 2.67 & 0.04 & 2.65 \\
+H10 & 3.66 & 5.22 & 0.13 \\
+\midrule
+\textbf{Error Máximo} & \textbf{4.20} & \textbf{5.22} & \textbf{2.65} \\
+\textbf{Error Medio}  & \textbf{1.98} & \textbf{0.56} & \textbf{0.89} \\
+\bottomrule
+\end{tabular}
+\label{tab:analisis_error}
+\end{table}
+
+
+\noindent de este modo se optó por emplear la ventana de Kaiser que muestra un comportamiento más estable en ambas características que las otras dos opciones.
+
+\subsubsection{Filtro pasabajos | Recuperación de fundamental}
+En última instancia se debe de diseñar un filtro pasa-bajos con tal de recuperar el armónico fundamental. Aquí se dispone de la misma problemática que en el caso anterior; sin embargo se dispone de la ventaja de que idóneamente se dispondrá de un único armónico, por lo que es posible compensar la ganancia del fenómeno de Gibbs que provoca la ventana rectangular. No obstante,se ha de evitar tener cambios muy abruptos ante posibles variaciones en la frecuencia de la red. De este modo se optó por emplear la misma ventana de Kaiser, ajustando el número de taps a 281, y un $\beta$ de 2. Obteniendo así la siguiente respuesta en frecuencia:
+
+\vspace{0.5cm}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = 0.7\textwidth]{Imagenes/3_THD/LP_1H.png}
+  \caption{Módulo de respuesta en frecuencia de filtro pasa-bajos |  Extracción de fundamental.}
+  \label{fig: Modulo de respuesta en frecuencia de filtro pasa-bajos, fund}
+\end{figure}
+
+\subsubsection{Simulación}
+En última instancia se pide implementar el esquema completo y simularlo con la siguiente señal:
+
+\begin{equation}
+x[n] = A_1 \cdot sin(2\pi \cdot n \cdot f_0/f_s) + \sum_{k=2}^K A_k \cdot sin(2\pi kf_0 \cdot nf_s)
+\end{equation}
+
+\noindent donde $f_0=50Hz$, $f_s=10kHz$ y $A_k$ es el k-esimo número de la sucesión de Fibonacci.
+
+El THD de esta señal se puede calcular como:
+
+\begin{equation}
+    THD = \frac{\sum_{k=2}^K 1/2 \cdot A_k^2}{1/2 \cdot A_1^2}
+\end{equation}
+
+\noindent por lo que podemos emplear esta misma para validar el sistema diseñado hasta aquí. Para ello se realizó una simulación, donde se generó un segundo de esta señal y se la inyectó al sistema. Una vez que se acabó el transitorio se midieron los valores RMS de la señal de salida y se calculó el THD como:
+
+\begin{equation}
+    THD_{medido} = \frac{\sqrt{V_t^2 -V_0^2}}{V_0}
+\end{equation}
+
+\vspace{0.5cm}
+\begin{table}[H]
+\centering
+\caption{Resultados finales de la simulación del analizador de THD}
+\begin{tabular}{lc}
+\toprule
+\textbf{Parámetro} & \textbf{Valor obtenido} \\
+\midrule
+Tensión RMS total ($V_t$ - 10 armónicos) & 0.8366 \\
+Tensión RMS fundamental ($V_0$) & 0.7026 \\
+\midrule
+\textbf{THD calculado por el algoritmo} & \textbf{64.64\%} \\
+THD teórico (Armónicos $H_2$ a $H_{10}$) & 65.29\% \\
+\midrule
+\textbf{Error relativo porcentual} & \textbf{0.99\%} \\
+\bottomrule
+\end{tabular}
+\label{tab:resultados_analizador}
+\end{table}
+
+\noindent donde el error observado esta asociado a las oscilaciones en la banda pasante de los filtros diseñados.
+
+\vspace{0.5cm}
+\begin{lstlisting}[style=mystyle, caption={Código empleado en la implementación.}, label={lst:filtro + ds}]
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import signal
+
+# --- 1. Parametros Globales ---
+fs = 10000
+duration = 1.0  # 1 segundo
+t = np.arange(0, duration, 1/fs)
+f0 = 50
+
+# --- 2. Generacion de Senal Sintetica (Fibonacci) ---
+def fibonacci_amplitudes(n_harmonics):
+    fib = [1, 1]
+    for i in range(2, n_harmonics + 2):
+        fib.append(fib[-1] + fib[-2])
+    # Ak = 1 / f_{k+1}
+    return [1/fib[k] for k in range(1, n_harmonics + 1)]
+
+# Generamos armonicos hasta Nyquist (fs/2 = 5000Hz -> 100 armonicos)
+K = 100 
+A = fibonacci_amplitudes(K)
+x = np.zeros_like(t)
+
+for k in range(1, K + 1):
+    x += A[k-1] * np.sin(2 * np.pi * k * f0 * t)
+
+# --- 3. Filtro Comb (y1) ---
+# y1[n] = alpha*x[n] + beta*y1[n-k]
+alpha = 2/11
+beta = 9/11
+k_delay = 200
+
+# Implementacion recursiva del Comb
+# b = [alpha], a = [1, 0, 0, ..., -beta]
+b_comb = [alpha]
+a_comb = np.zeros(k_delay + 1)
+a_comb[0] = 1
+a_comb[k_delay] = -beta
+y1 = signal.lfilter(b_comb, a_comb, x)
+
+# --- 4. Filtros FIR Kaiser (y2 e y3) ---
+# y2: Recupera 10 armonicos
+n2 = 281
+beta2 = 1.8
+fc2 = 530
+taps_y2 = signal.firwin(n2, fc2, fs=fs, window=('kaiser', beta2))
+y2 = signal.lfilter(taps_y2, [1.0], y1)
+
+# y3: Recupera fundamental
+n3 = 281
+beta3 = 2.0
+fc3 = 75
+taps_y3 = signal.firwin(n3, fc3, fs=fs, window=('kaiser', beta3))
+y3 = signal.lfilter(taps_y3, [1.0], y1)
+
+# --- 5. Calculo de THD ---
+# Para evitar el transitorio inicial de los filtros, descartamos el primer tramo
+offset = 5000 
+y2_steady = y2[offset:]
+y3_steady = y3[offset:]
+
+# Valores RMS
+Vt = np.sqrt(np.mean(y2_steady**2))
+V0 = np.sqrt(np.mean(y3_steady**2))
+
+# THD = sqrt(Vt^2 - V0^2) / V0
+thd_calculado = (np.sqrt(Vt**2 - V0**2) / V0) * 100
+
+# --- 6. Validacion Teorica ---
+# THD_teorico usando los primeros 10 armonicos (A1 a A10)
+sum_sq_harmonics = np.sum(np.array(A[1:10])**2)
+thd_teorico = (np.sqrt(sum_sq_harmonics) / A[0]) * 100
+
+print(A)
+print(f"--- Resultados del Analizador ---")
+print(f"V_total (10 armonicos): {Vt:.4f}")
+print(f"V_fundamental (V0):     {V0:.4f}")
+print(f"THD calculado:          {thd_calculado:.2f}%")
+print(f"THD teorico (H2-H10):   {thd_teorico:.2f}%")
+
+# --- 7. Visualizacion ---
+plt.figure(figsize=(12, 5))
+plt.plot(t[offset:offset+1000], y2[offset:offset+1000], label='y2 (10 Armonicos)')
+plt.plot(t[offset:offset+1000], y3[offset:offset+1000], label='y3 (Fundamental)', linewidth=2)
+plt.legend()
+plt.grid(True)
+plt.show()
+\end{lstlisting}

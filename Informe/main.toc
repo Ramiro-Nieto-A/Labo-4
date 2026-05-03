@@ -9,7 +9,10 @@
 \contentsline {section}{\numberline {3}Ejercicio 2: filtrado por convolución}{9}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Overlap and save}{10}{subsection.3.1}%
 \contentsline {subsection}{\numberline {3.2}Implementación}{12}{subsection.3.2}%
-\contentsline {section}{\numberline {4}Analizador de THD}{14}{section.4}%
+\contentsline {section}{\numberline {4}Ejercicio 3: Analizador de THD}{14}{section.4}%
 \contentsline {subsection}{\numberline {4.1}Diseño de bloques}{14}{subsection.4.1}%
 \contentsline {subsubsection}{\numberline {4.1.1}Filtro comb}{14}{subsubsection.4.1.1}%
-\contentsline {section}{Referencias}{16}{equation.4}%
+\contentsline {subsubsection}{\numberline {4.1.2}Pasa-bajos | Recuperación de primeros 10 armónicos}{15}{subsubsection.4.1.2}%
+\contentsline {subsubsection}{\numberline {4.1.3}Filtro pasabajos | Recuperación de fundamental}{17}{subsubsection.4.1.3}%
+\contentsline {subsubsection}{\numberline {4.1.4}Simulación}{18}{subsubsection.4.1.4}%
+\contentsline {section}{Referencias}{21}{lstnumber.4.87}%
