@@ -1,0 +1,168 @@
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 2
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"DAC.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "../source/DAC.c"
+  20              		.section	.text.DAC_Init,"ax",%progbits
+  21              		.align	1
+  22              		.p2align 2,,3
+  23              		.global	DAC_Init
+  24              		.syntax unified
+  25              		.thumb
+  26              		.thumb_func
+  28              	DAC_Init:
+  29              	.LFB123:
+   1:../source/DAC.c **** 
+   2:../source/DAC.c **** #include "DAC.h"
+   3:../source/DAC.c **** 
+   4:../source/DAC.c **** #define DAC_DATL_DATA0_WIDTH 8
+   5:../source/DAC.c **** 
+   6:../source/DAC.c **** void DAC_Init (void)
+   7:../source/DAC.c **** {
+  30              		.loc 1 7 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+   8:../source/DAC.c **** 	SIM->SCGC2 |= SIM_SCGC2_DAC0_MASK;
+  35              		.loc 1 8 2 view .LVU1
+  36              		.loc 1 8 5 is_stmt 0 view .LVU2
+  37 0000 094B     		ldr	r3, .L4
+   9:../source/DAC.c **** 	SIM->SCGC2 |= SIM_SCGC2_DAC1_MASK;
+  10:../source/DAC.c **** 
+  11:../source/DAC.c **** 	DAC0->C0 = DAC_C0_DACEN_MASK | DAC_C0_DACRFS_MASK | DAC_C0_DACTRGSEL_MASK;
+  12:../source/DAC.c **** 	DAC1->C0 = DAC_C0_DACEN_MASK | DAC_C0_DACRFS_MASK | DAC_C0_DACTRGSEL_MASK;
+  38              		.loc 1 12 11 view .LVU3
+  39 0002 0A48     		ldr	r0, .L4+4
+   8:../source/DAC.c **** 	SIM->SCGC2 |= SIM_SCGC2_DAC0_MASK;
+  40              		.loc 1 8 5 view .LVU4
+  41 0004 DA6A     		ldr	r2, [r3, #44]
+   8:../source/DAC.c **** 	SIM->SCGC2 |= SIM_SCGC2_DAC0_MASK;
+  42              		.loc 1 8 13 view .LVU5
+  43 0006 42F48052 		orr	r2, r2, #4096
+   7:../source/DAC.c **** 	SIM->SCGC2 |= SIM_SCGC2_DAC0_MASK;
+  44              		.loc 1 7 1 view .LVU6
+  45 000a 10B4     		push	{r4}
+  46              		.cfi_def_cfa_offset 4
+  47              		.cfi_offset 4, -4
+   8:../source/DAC.c **** 	SIM->SCGC2 |= SIM_SCGC2_DAC0_MASK;
+  48              		.loc 1 8 13 view .LVU7
+  49 000c DA62     		str	r2, [r3, #44]
+   9:../source/DAC.c **** 	SIM->SCGC2 |= SIM_SCGC2_DAC1_MASK;
+  50              		.loc 1 9 2 is_stmt 1 view .LVU8
+   9:../source/DAC.c **** 	SIM->SCGC2 |= SIM_SCGC2_DAC1_MASK;
+  51              		.loc 1 9 5 is_stmt 0 view .LVU9
+  52 000e DA6A     		ldr	r2, [r3, #44]
+  11:../source/DAC.c **** 	DAC1->C0 = DAC_C0_DACEN_MASK | DAC_C0_DACRFS_MASK | DAC_C0_DACTRGSEL_MASK;
+  53              		.loc 1 11 11 view .LVU10
+  54 0010 074C     		ldr	r4, .L4+8
+  55 0012 E021     		movs	r1, #224
+   9:../source/DAC.c **** 	SIM->SCGC2 |= SIM_SCGC2_DAC1_MASK;
+  56              		.loc 1 9 13 view .LVU11
+  57 0014 42F40052 		orr	r2, r2, #8192
+  58 0018 DA62     		str	r2, [r3, #44]
+  11:../source/DAC.c **** 	DAC1->C0 = DAC_C0_DACEN_MASK | DAC_C0_DACRFS_MASK | DAC_C0_DACTRGSEL_MASK;
+  59              		.loc 1 11 2 is_stmt 1 view .LVU12
+  11:../source/DAC.c **** 	DAC1->C0 = DAC_C0_DACEN_MASK | DAC_C0_DACRFS_MASK | DAC_C0_DACTRGSEL_MASK;
+  60              		.loc 1 11 11 is_stmt 0 view .LVU13
+  61 001a 84F82110 		strb	r1, [r4, #33]
+  62              		.loc 1 12 2 is_stmt 1 view .LVU14
+  63              		.loc 1 12 11 is_stmt 0 view .LVU15
+  64 001e 80F82110 		strb	r1, [r0, #33]
+  13:../source/DAC.c **** }
+  65              		.loc 1 13 1 view .LVU16
+  66 0022 5DF8044B 		ldr	r4, [sp], #4
+  67              		.cfi_restore 4
+  68              		.cfi_def_cfa_offset 0
+  69 0026 7047     		bx	lr
+  70              	.L5:
+  71              		.align	2
+  72              	.L4:
+  73 0028 00800440 		.word	1074036736
+  74 002c 00D00C40 		.word	1074581504
+  75 0030 00C00C40 		.word	1074577408
+  76              		.cfi_endproc
+  77              	.LFE123:
+  79              		.section	.text.DAC_SetData,"ax",%progbits
+  80              		.align	1
+  81              		.p2align 2,,3
+  82              		.global	DAC_SetData
+  83              		.syntax unified
+  84              		.thumb
+  85              		.thumb_func
+  87              	DAC_SetData:
+  88              	.LVL0:
+  89              	.LFB124:
+  14:../source/DAC.c **** 
+  15:../source/DAC.c **** void DAC_SetData (DAC_t dac, DACData_t data)
+  16:../source/DAC.c **** {
+  90              		.loc 1 16 1 is_stmt 1 view -0
+  91              		.cfi_startproc
+  92              		@ args = 0, pretend = 0, frame = 0
+  93              		@ frame_needed = 0, uses_anonymous_args = 0
+  94              		@ link register save eliminated.
+  17:../source/DAC.c **** 	dac->DAT[0].DATL = DAC_DATL_DATA0(data);
+  95              		.loc 1 17 2 view .LVU18
+  96              		.loc 1 17 21 is_stmt 0 view .LVU19
+  97 0000 CBB2     		uxtb	r3, r1
+  18:../source/DAC.c **** 	dac->DAT[0].DATH = DAC_DATH_DATA1(data >> DAC_DATL_DATA0_WIDTH);
+  98              		.loc 1 18 21 view .LVU20
+  99 0002 C1F30321 		ubfx	r1, r1, #8, #4
+ 100              	.LVL1:
+  17:../source/DAC.c **** 	dac->DAT[0].DATL = DAC_DATL_DATA0(data);
+ 101              		.loc 1 17 19 view .LVU21
+ 102 0006 0370     		strb	r3, [r0]
+ 103              		.loc 1 18 2 is_stmt 1 view .LVU22
+ 104              		.loc 1 18 19 is_stmt 0 view .LVU23
+ 105 0008 4170     		strb	r1, [r0, #1]
+  19:../source/DAC.c **** }
+ 106              		.loc 1 19 1 view .LVU24
+ 107 000a 7047     		bx	lr
+ 108              		.cfi_endproc
+ 109              	.LFE124:
+ 111              		.text
+ 112              	.Letext0:
+ 113              		.file 2 "/usr/local/mcuxpressoide-11.10.0_3148/ide/plugins/com.nxp.mcuxpresso.tools.linux_11.10.0.
+ 114              		.file 3 "/usr/local/mcuxpressoide-11.10.0_3148/ide/plugins/com.nxp.mcuxpresso.tools.linux_11.10.0.
+ 115              		.file 4 "/home/jacoby/Documents/MCUXpresso_11.10.0_3148/DSP_workspace/DSP3/CMSIS/MK64F12.h"
+ 116              		.file 5 "../source/DAC.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 DAC.c
+     /tmp/ccbnuubo.s:21     .text.DAC_Init:00000000 $t
+     /tmp/ccbnuubo.s:28     .text.DAC_Init:00000000 DAC_Init
+     /tmp/ccbnuubo.s:73     .text.DAC_Init:00000028 $d
+     /tmp/ccbnuubo.s:80     .text.DAC_SetData:00000000 $t
+     /tmp/ccbnuubo.s:87     .text.DAC_SetData:00000000 DAC_SetData
+                           .group:00000000 wm4.0.6daa9fc78e4f6e1d52d3883eb654976f
+                           .group:00000000 wm4._newlib_version.h.4.6d111ab2e95434b664b53815e5c8ccba
+                           .group:00000000 wm4.features.h.33.2eefb68b261e70563a8ac654e712169f
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
+                           .group:00000000 wm4.fsl_device_registers.h.32.f10b25a7fd7ad45b9a40904c33f28816
+                           .group:00000000 wm4.MK64F12.h.105.e884e5c80776532d2ec0f5c21e2ea7cb
+                           .group:00000000 wm4.core_cm4.h.42.42f38327ee0970d80f60117e6a3ba2b0
+                           .group:00000000 wm4.cmsis_gcc.h.36.39970cb43ce4b53c82644a1f9bc2eab9
+                           .group:00000000 wm4.core_cm4.h.223.7b48c9958ef5573320c4765074c8b0ce
+                           .group:00000000 wm4.system_MK64F12.h.109.c6d21568e03be21b21c922eb7345d6e3
+                           .group:00000000 wm4.MK64F12.h.475.cafa8e1e521f96f0b72de286863a6df7
+                           .group:00000000 wm4.MK64F12_features.h.92.512cea46d882153168efeec0bc3a9da7
+                           .group:00000000 wm4.hardware.h.27.0531344360c1b4ef1fba1263e2a4c488
+
+NO UNDEFINED SYMBOLS

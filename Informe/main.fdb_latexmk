@@ -1,12 +1,12 @@
 # Fdb version 4
-["biber main"] 1777691434.79305 "main.bcf" "main.bbl" "main" 1777785877.75545 0
+["biber main"] 1777937243.65313 "main.bcf" "main.bbl" "main" 1777937401.24408 0
   "bibl.bib" 1774651993 1494 bab2ca198db5eb7d95c50df2212562b5 ""
-  "main.bcf" 1777785877 107863 1212451f3e7e537d8062cca913df01db "pdflatex"
+  "main.bcf" 1777937400 107458 5c78eb1dab1faedcfb3bbcc7ed2c727a "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1777785873.31386 "c:/Users/herra/Desktop/Labo III/Labo 4/Informe/main.tex" "main.pdf" "main" 1777785877.75678 0
+["pdflatex"] 1777937396.00776 "c:/Users/herra/Desktop/Labo III/Labo 4/Informe/main.tex" "main.pdf" "main" 1777937401.24543 0
   "C:/Users/herra/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1775054371 80938 11adfb72b14af111a4e7f381261df7b8 ""
   "C:/Users/herra/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1000.pk" 1774127452 25420 e8eda3378ce5c6155f86ae17428cb328 ""
   "C:/Users/herra/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1200.pk" 1774105425 31952 e496ed34002e2fde3d7e871a013d5c6c ""
@@ -26,7 +26,6 @@
   "C:/Users/herra/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecti1200.pk" 1774105285 39120 b1fc7076ca5ac33d00db85ab36af2cc1 ""
   "C:/Users/herra/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecti1440.pk" 1774105306 47464 de9f59ef39938bc4c134a5019827e5be ""
   "C:/Users/herra/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ectt1000.pk" 1775184599 20028 1627adcaaf501ad2b3bf1df3d3097bce ""
-  "C:/Users/herra/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ectt1200.pk" 1774105421 24152 aa2bd8b4ce4168cb34c09deed61e9e26 ""
   "C:/Users/herra/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecxc1728.pk" 1774105294 50780 5d716d15a85021ba0550c5a4210a8ef0 ""
   "C:/Users/herra/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1200.pk" 1774105276 14064 bbd381b052c7602abbd40c18f09bf8e0 ""
   "C:/Users/herra/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1774104978 13333487 649dce305cbc97ef2a6516a39ece7089 ""
@@ -378,22 +377,23 @@
   "Imagenes/3_THD/LP_10H.png" 1777749535 81295 60ce1584b4051d41780e9d7d3a6e3d92 ""
   "Imagenes/3_THD/LP_1H.png" 1777783930 74840 13442178757fc63f1bdadf5e9ffbac4d ""
   "Imagenes/3_THD/com_rta_en_frec.png" 1777745021 47747 6b76f4b54eb0992b14e8c2a050cb1f0e ""
+  "Imagenes/3_THD/comparacion_C_Py.png" 1777937091 77461 e9559138e303437b73d6422571ba0c70 ""
   "Imagenes/3_THD/esquema_THD.drawio.pdf" 1777745608 22871 74a4f0cbabec381c250acec404f8db86 ""
   "Imagenes/logo.png" 1774103507 39124 7dfad1ff8c37a828001803faa08e9df2 ""
   "Imagenes/titlepage.png" 1774103507 82355 f2eadc5f3e00205a7c3ccaf0b3145620 ""
-  "Secciones/0_Introduccion.tex" 1774663008 1063 7746ebb0c188fec8a258da6767da511a ""
+  "Secciones/0_Introduccion.tex" 1777937394 1131 65318397245adc215438038e6ea50af6 ""
   "Secciones/1_LPF_AL.tex" 1777668723 7653 0760cdae33ece03c28f2d878eb8311bb ""
   "Secciones/2_Filtrado_x_conv.tex" 1777692173 8944 5eac43b2a9015ef70e9551a36d3d25c0 ""
-  "Secciones/3_THD.tex" 1777785867 13927 c49b20defd5b21c26552bddab619fce1 ""
+  "Secciones/3_THD.tex" 1777937203 33843 97ed658ae3290834091f54f20b68e964 ""
   "all-in-one.cls" 1774103507 9854 95d35506e2a3f924f27e2471476b6aec ""
-  "c:/Users/herra/Desktop/Labo III/Labo 4/Informe/main.tex" 1777694040 4607 2898f1de7413c2cd957c25a312e21f94 ""
-  "main.aux" 1777785877 10434 bd2f5d496317742dce05c02a99892224 "pdflatex"
-  "main.bbl" 1777691443 7206 d8deac320c7ace178a15e114ebe49e66 "biber main"
-  "main.out" 1777785877 3262 728843d72e74529cc448679c6853e1f1 "pdflatex"
-  "main.run.xml" 1777785877 2363 96ed58a571658cbca1d9f5e0304f8cf1 "pdflatex"
-  "main.tex" 1777694040 4607 2898f1de7413c2cd957c25a312e21f94 ""
-  "main.toc" 1777785877 1584 85bbf17a8ba36a2a552e6fb38b357371 "pdflatex"
-  "preamble.tex" 1777666679 1686 9df7d06c2e05401f58f82ff980b04f4a ""
+  "c:/Users/herra/Desktop/Labo III/Labo 4/Informe/main.tex" 1777937237 4608 fb0746d515d82ba5b618884e9d8da299 ""
+  "main.aux" 1777937400 12159 29220af952346b18cacf57fad4664958 "pdflatex"
+  "main.bbl" 1777937306 7206 d8deac320c7ace178a15e114ebe49e66 "biber main"
+  "main.out" 1777937400 3924 4a6cdb04fb6d52dc91849778a9d7235d "pdflatex"
+  "main.run.xml" 1777937400 2363 96ed58a571658cbca1d9f5e0304f8cf1 "pdflatex"
+  "main.tex" 1777937237 4608 fb0746d515d82ba5b618884e9d8da299 ""
+  "main.toc" 1777937400 1913 aa66fae81f7c1a7e4fc105d7ba78dcc6 "pdflatex"
+  "preamble.tex" 1777936345 2543 8a56f333a649e21adb9fe65f12e0b6ed ""
   (generated)
   "main.aux"
   "main.bcf"

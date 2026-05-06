@@ -296,3 +296,550 @@ plt.legend()
 plt.grid(True)
 plt.show()
 \end{lstlisting}
+
+\subsection{Análisis de implementación}
+Si bien el sistema diseñado cumple con las especificaciones requeridas, existen ciertos riesgos a la hora de realizar la implementación.
+\subsubsection{Implementación en punto fijo}
+El cálculo del valor RMS de una señal involucra la operación:
+
+\begin{equation}
+V_{RMS} = \sqrt{\frac{1}{N} \sum_{n=0}^{N-1} y[n]^2}
+\end{equation}
+
+\noindent La presencia de la raíz cuadrada y la división por N provocan que inherentemente la sumatoria de los cuadrados se desvié ampliamente del rango de la señal original y el valor RMS a calcular. Por ende, este da origen a un riesgo de overflow al implementarlo en punto fijo si no se toman las precauciones necesarias. 
+
+Una forma de mitigar este riesgo es realizar un cálculo del promedio móvil de los cuadrados, es decir, en lugar de calcular la sumatoria de los cuadrados de toda la señal, se puede calcular la sumatoria de los cuadrados de un bloque de muestras y luego dividir por el número de muestras en ese bloque. De este modo, se mantiene el valor dentro de un rango manejable y se reduce el riesgo de overflow:
+
+\begin{equation}
+MS_{n} = MS_{n-1} + \frac{y[n]^2 - MS_{n-1}}{n}
+\end{equation}
+
+\subsubsection{FFT como alternativa}
+Se sugiere el uso de la FFT como alternativa para el cálculo del THD, empleando la amplitud de los armónicos asociados para determinar los valores RMS.
+
+Este método dispone de una ventaja de cálculo con respecto a lo observado en la implementación propuesta (notar el orden de los filtros diseñados); donde inclusive se podría emplear el algoritmo de Goertzel (algoritmo óptimo para el cálculo de bines individuales de la DFT) con tal de optimizar aun más el cálculo de los armónicos de interés. No obstante, esta alternativa dispone de un riesgo asociado: ¿Qué ocurre si los armónicos no coinciden exactamente con los bines de la FFT?
+
+En un principio, dado que se conoce de antemano el contenido espectral que se desea medir, es posible tomar una ventana adecuada para minimizar el leakage y así obtener una medición precisa de los armónicos. Sin embargo, a diferencia del filtro comb implementado, esta alternativa no evita que el contenido espectral de la señal de entrada que esta en las inmediaciones de los armónicos de interés se asocie al bin calculado, por lo que este leakage es potencialmente riesgoso (aunque si la señal sensada es lo suficientemente limpia no debería de ser crítica esta cuestión). 
+
+Finalmente, se ha de tener en cuenta que ocurriría si la frecuencia fundamental no corresponde exactamente con 50Hz (dado que el diseño del procedimiento previamente descrito involucra esta cuestión). De ser así los armónicos a estudiar no coincidirán con los bines de la FFT, por lo que la amplitud de los mismos variaría en correspondencia con la diferencia de frecuencia y la ventana empleada. Sin embargo, notar que en el método implementado no estamos exceptuados de esta problemática, en tanto y en cuanto el filtro comb tiene un ancho de banda acotado, por lo que fluctuaciones de la fundamental alteran también la amplitud de la señal obtenida, aunque en principio es menos crítico.
+
+
+\subsection{Implementación en MCU}
+Se dispusieron de algunos inconvenientes a la hora de realizar la implementación de este sistema en una MCU. El código empelado corresponde a:
+
+\begin{lstlisting}[style=mystyle, caption=Implementación en MCU]
+/*
+ * main.c
+ *
+ *  Created on: Jun 23, 2025
+ *      Author: mpaurabe
+ */
+
+#include "fsl_device_registers.h"
+#include "hardware.h"
+#include "PingPongBuffer.h"
+#include <ports.h>
+#include "config.h"
+#include <math.h>
+
+#define BUFFER_SIZE 1000
+#define SAMPLE_RATE_HZ 10000U
+
+
+volatile bool nextsample;
+
+volatile uint16_t *adc_in;
+volatile uint16_t *dac_out;
+static int alternate = -1;
+
+void my_app(void);
+
+int main(void)
+{
+	hw_Init();
+	Init_Ports();
+	PingPongBuffer_Init(SAMPLE_RATE_HZ,BUFFER_SIZE);
+
+    for(;;)
+    {
+        if(SW2_read())
+        	alternate = -1;
+
+        if(SW3_read())
+        	alternate = 1;
+
+
+    	if(nextsample == 1)
+        {
+        	my_app();
+        	nextsample = 0;
+        }
+    }
+}
+
+
+
+#define FIR_TAP1    281
+#define FIR_TAP2    281
+#define COMB_DELAY  200
+
+const float taps_FIR1[281] = {...};
+const float taps_FIR2[281] = {...};
+
+void FIR_Process_Buffer(float *in, float *out, int numElem, float *state, int *pIdx, const float *taps, int numTaps);
+float RMS_calculator(float *s, int numElem);
+
+// Estados para los filtros 
+static float state_comb[COMB_DELAY] = {0};
+static int idx_comb = 0;
+
+static float state_y2[FIR_TAP1] = {0};
+static int idx_y2 = 0;
+
+static float state_y3[FIR_TAP2] = {0};
+static int idx_y3 = 0;
+
+// Parametros del Comb
+const float alpha = 0.18181f; // 2/11
+const float beta  = 0.81818f; // 9/11
+
+void my_app(void)
+{
+	static float modul = 0.5;
+	volatile uint16_t *adc_in = GetBufferIn();
+	volatile uint16_t *dac_out = SetBufferOut();
+
+	TurnON(TP0);
+
+	// Senales a implementar
+	static float y1[BUFFER_SIZE];
+	static float y2[BUFFER_SIZE];
+	static float y3[BUFFER_SIZE];
+
+	int i,j;
+
+	for (int i = 0; i < BUFFER_SIZE; i++)
+	{
+	    float x_n = (float)adc_in[i] - 2048.0f;
+
+	    // Leemos el valor que tiene el delay (la salida se hace D muestras)
+	    volatile float delayed_y = state_comb[idx_comb];
+
+	    // Calculamos la salida actual siguiendo y[n] = a*x[n] + b*y[n-D]
+	    y1[i] = (alpha * x_n) + (beta * delayed_y);
+
+	    // Guardamos la salida actual en el buffer de estado para que sea
+	    //    el "delayed_y" dentro de D muestras
+	    state_comb[idx_comb] = y1[i];
+
+	    // Avanzamos el puntero circular
+	    idx_comb++;
+	    if (idx_comb >= COMB_DELAY) idx_comb = 0;
+	}
+
+	FIR_Process_Buffer(y1, y2, BUFFER_SIZE, state_y2, &idx_y2, taps_FIR1, FIR_TAP1);
+	FIR_Process_Buffer(y1, y3, BUFFER_SIZE, state_y3, &idx_y3, taps_FIR2, FIR_TAP2);
+
+	float V0 = RMS_calculator(y3, BUFFER_SIZE);
+	float Vt = RMS_calculator(y2, BUFFER_SIZE);
+
+	float THD = sqrtf(Vt * Vt - V0 * V0)/V0;
+
+	for (int i = 0; i < BUFFER_SIZE; i++)
+		dac_out[i]= (uint16_t)(THD * 4095.0f);
+
+	modul *=alternate;
+	TurnOFF(TP0);
+
+}
+
+/**
+ * @brief Procesa un buffer completo de entrada y genera uno de salida.
+ * @param in       Puntero al buffer de entrada (ej: y1_buffer)
+ * @param out      Puntero al buffer donde se guardara la salida (ej: y2_buffer)
+ * @param numElem  Tamano del buffer (BUFFER_SIZE, ej: 1024)
+ * @param state    Array de historial (debe ser estatico y de tamano numTaps)
+ * @param pIdx     Puntero al indice actual del buffer circular (mantiene el estado entre bloques)
+ * @param taps     Array de coeficientes
+ * @param numTaps  Cantidad de coeficientes (281)
+ */
+void FIR_Process_Buffer(float *in, float *out, int numElem, float *state, int *pIdx, const float *taps, int numTaps)
+{
+    // Bucle que recorre cada muestra del buffer de entrada
+    for (int i = 0; i < numElem; i++)
+    {
+        // Guardar la muestra actual en el buffer circular de estado
+        state[*pIdx] = in[i];
+
+        // Convolucion: Multiplicar y Acumular (MAC)
+        float acc = 0.0f;
+        int currIdx = *pIdx;
+
+        for (int j = 0; j < numTaps; j++)
+        {
+            acc += taps[j] * state[currIdx];
+
+            // Retroceder en el buffer circular
+            currIdx--;
+            if (currIdx < 0) {
+                currIdx = numTaps - 1;
+            }
+        }
+
+        // Escribir el resultado en el buffer de salida
+        out[i] = acc;
+
+        // Avanzar el puntero del buffer circular para la PROXIMA muestra
+        *pIdx = (*pIdx + 1) % numTaps;
+    }
+}
+
+
+float RMS_calculator(float *s, int numElem)
+{
+    float acc = 0.0f;
+    for (int i = 0; i < numElem; i++)
+    {
+        float val = s[i];
+        acc += val * val;
+    }
+    
+    return sqrtf(acc / (float)numElem);
+}
+
+\end{lstlisting}
+
+En vista a debuggear este código se verificó que el tiempo de cálculo de los filtros no supere el tiempo de adquisición de cada bloque. Este ensayo se realizó  mostrando a la salida la entrada, donde se pudo observar la entrada sin distorsión alguna, por lo que se concluye que el tiempo de cálculo es menor al tiempo de adquisición. 
+
+Con tal de verificar que la secuencia empleada no sea errónea, se procedió a generar mediante python una señal de prueba, junto con el set de \emph{golden values} asociados:
+
+
+\vspace{0.5cm}
+\begin{lstlisting}[style=mystyle, caption={Código empleado para generar input \& golden.}, label={lst:filtro + ds}]
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import signal
+
+# --- Configuracion identica al codigo C ---
+BUFFER_SIZE = 1000
+SAMPLE_RATE = 10000  # 10 kHz
+COMB_DELAY = 200
+ALPHA = 0.18181
+BETA = 0.81818
+
+def generate_inputs(filename, duration_sec=1.0):
+    """Genera una senal de prueba: Seno de 50Hz + 3er armonico + Ruido"""
+    t = np.arange(0, duration_sec, 1/SAMPLE_RATE)
+    
+    # Amplitudes para el calculo del THD esperado
+    # Fundamental (50Hz) y 3er Armonico (150Hz)
+    amp_fund = 1000.0
+    amp_harm = 300.0
+    
+    fundamental = amp_fund * np.sin(2 * np.pi * 50 * t)
+    harmonico = amp_harm * np.sin(2 * np.pi * 150 * t)
+    ruido = 50 * np.random.normal(size=len(t))
+    
+    signal_float = 2048 + fundamental + harmonico + ruido
+    signal_uint16 = np.clip(signal_float, 0, 4095).astype(np.uint16)
+    
+    np.savetxt(filename, signal_uint16, fmt='%d')
+    print(f"Archivo de entrada '{filename}' generado.")
+    
+    # Retornamos la senal y el THD teorico (armonico / fundamental)
+    thd_teorico = amp_harm / amp_fund
+    return signal_uint16, thd_teorico
+
+def golden_model(input_signal, taps_fir1, taps_fir2):
+    """Implementa la logica del codigo C en Python"""
+    x = input_signal.astype(float) - 2048.0
+    
+    # 1. Filtro Comb
+    y1 = np.zeros_like(x)
+    for n in range(len(x)):
+        delayed_val = y1[n - COMB_DELAY] if n >= COMB_DELAY else 0
+        y1[n] = ALPHA * x[n] + BETA * delayed_val
+        
+    # 2. Filtros FIR
+    y2 = np.convolve(y1, taps_fir1, mode='same')
+    y3 = np.convolve(y1, taps_fir2, mode='same')
+    
+    # 3. Calculo de THD por bloques
+    thd_output = []
+    for i in range(0, len(y1), BUFFER_SIZE):
+        block_y2 = y2[i:i+BUFFER_SIZE]
+        block_y3 = y3[i:i+BUFFER_SIZE]
+        
+        if len(block_y2) < BUFFER_SIZE: break
+        
+        v0 = np.sqrt(np.mean(block_y3**2))
+        vt = np.sqrt(np.mean(block_y2**2))
+        
+        # THD = sqrt(Vt^2 - V0^2) / V0
+        thd = np.sqrt(np.abs(vt**2 - v0**2)) / v0 if v0 > 1e-6 else 0
+        thd_output.extend([int(thd * 4095)] * len(block_y2))
+        
+    return thd_output
+
+if __name__ == "__main__":
+    # 1. Generar entrada y obtener THD teorico
+    input_data, thd_esperado = generate_inputs("input_samples.txt")
+    
+    # 2. Diseno de filtros (usando SAMPLE_RATE definido arriba)
+    fs = SAMPLE_RATE
+    
+    # FIR 1: Pasa-todo o banda ancha para Vt
+    n2, beta2, fc2 = 281, 1.8, 530 
+    taps_f1 = signal.firwin(n2, fc2, fs=fs, window=('kaiser', beta2))
+
+    # FIR 2: Pasa-bajos para V0 (Fundamental)
+    n3, beta3, fc3 = 281, 2.0, 75
+    taps_f2 = signal.firwin(n3, fc3, fs=fs, window=('kaiser', beta3))
+    
+    # 3. Ejecutar modelo
+    golden_result = golden_model(input_data, taps_f1, taps_f2)
+    
+    # 4. Calcular THD final obtenido (promedio de la salida del DAC)
+    # Convertimos de escala 0-4095 de vuelta a flotante 0.0-1.0
+    thd_final = np.mean(golden_result) / 4095.0
+    
+    # 5. Impresion de resultados
+    print("\n" + "="*45)
+    print(f"{'ANALISIS DE RESULTADOS (GOLDEN MODEL)':^45}")
+    print("="*45)
+    print(f"Frecuencia de Muestreo: {SAMPLE_RATE} Hz")
+    print(f"THD Esperado (Teorico):  {thd_esperado:.4f} ({thd_esperado*100:.2f}%)")
+    print(f"THD Final (Procesado):   {thd_final:.4f} ({thd_final*100:.2f}%)")
+    print(f"Error absoluto:          {abs(thd_esperado - thd_final):.4f}")
+    print("="*45)
+    
+    # 6. Guardar referencia
+    np.savetxt("golden_reference.txt", golden_result, fmt='%d')
+    print("Golden Reference generado en 'golden_reference.txt'.")
+\end{lstlisting}
+
+\noindent donde la verificación alli indicada arrojo:
+
+\begin{table}[H]
+\centering
+\caption{Resultados del Análisis de Distorsión Armónica (Golden Model en Python)}
+\begin{tabular}{lc}
+\toprule
+\textbf{Parámetro} & \textbf{Valor} \\
+\midrule
+Frecuencia de Muestreo ($f_s$) & 10000 Hz \\
+THD Esperado (Teórico) & 0.3000 (30.00\%) \\
+THD Final (Procesado) & 0.2940 (29.40\%) \\
+\midrule
+\rowcolor[gray]{0.9} \textbf{Error Absoluto} & \textbf{0.0060} \\
+\bottomrule
+\end{tabular}
+\label{tab:analisis_golden_model}
+\end{table}
+
+Para generar la salida en C se empleo el siguiente código:
+
+
+\vspace{0.5cm}
+\begin{lstlisting}[style=mystyle, caption={Código empleado para generar salida de C.}, label={lst:filtro + ds}]
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <math.h>
+
+#define BUFFER_SIZE 1000
+#define FIR_TAP1    281
+#define FIR_TAP2    281
+#define COMB_DELAY  200
+
+// --- Coeficientes --
+const float taps_FIR1[281] = {...};
+const float taps_FIR2[281] = {...};
+
+// --- Variables de Estado Globales ---
+static float state_comb[COMB_DELAY] = {0};
+static int idx_comb = 0;
+static float state_y2[FIR_TAP1] = {0};
+static int idx_y2 = 0;
+static float state_y3[FIR_TAP2] = {0};
+static int idx_y3 = 0;
+
+const float alpha = 0.18181f;
+const float beta  = 0.81818f;
+
+// --- Prototipos ---
+void FIR_Process_Buffer(float *in, float *out, int numElem, float *state, int *pIdx, const float *taps, int numTaps);
+float RMS_calculator(float *s, int numElem);
+
+int main(int argc, char *argv[]) {
+    if (argc < 3) {
+        printf("Uso: %s <archivo_entrada.txt> <archivo_salida.txt>\n", argv[0]);
+        return 1;
+    }
+
+    FILE *fin = fopen(argv[1], "r");
+    FILE *fout = fopen(argv[2], "w");
+
+    if (!fin || !fout) {
+        perror("Error al abrir los archivos");
+        return 1;
+    }
+
+    uint16_t adc_buffer[BUFFER_SIZE];
+    float y1[BUFFER_SIZE], y2[BUFFER_SIZE], y3[BUFFER_SIZE];
+    
+    printf("Procesando...\n");
+
+    // Bucle principal: lee bloques de BUFFER_SIZE hasta el fin del archivo
+    while (!feof(fin)) {
+        int samples_read = 0;
+        
+        // 1. Leer datos del archivo (asumiendo valores enteros 0-4095)
+        for (int i = 0; i < BUFFER_SIZE && !feof(fin); i++) {
+            if (fscanf(fin, "%hu", &adc_buffer[i]) == 1) {
+                samples_read++;
+            }
+        }
+
+        if (samples_read == 0) break;
+
+        // 2. Procesamiento Comb Filter
+        for (int i = 0; i < samples_read; i++) {
+            float x_n = (float)adc_buffer[i] - 2048.0f;
+            float delayed_y = state_comb[idx_comb];
+            y1[i] = (alpha * x_n) + (beta * delayed_y);
+            state_comb[idx_comb] = y1[i];
+            idx_comb = (idx_comb + 1) % COMB_DELAY;
+        }
+
+        // Procesamiento FIR
+        FIR_Process_Buffer(y1, y2, samples_read, state_y2, &idx_y2, taps_FIR1, FIR_TAP1);
+        FIR_Process_Buffer(y1, y3, samples_read, state_y3, &idx_y3, taps_FIR2, FIR_TAP2);
+
+        // Calculo de THD
+        float V0 = RMS_calculator(y3, samples_read);
+        float Vt = RMS_calculator(y2, samples_read);
+        
+        // Evitar division por cero
+        float THD = (V0 > 0.0001f) ? sqrtf(fabsf(Vt * Vt - V0 * V0)) / V0 : 0.0f;
+
+        // 5. Generar salida (Escribir el valor de THD mapeado a 12 bits)
+        for (int i = 0; i < samples_read; i++) {
+            uint16_t out_val = (uint16_t)(THD * 4095.0f);
+            fprintf(fout, "%u\n", out_val);
+        }
+    }
+
+    fclose(fin);
+    fclose(fout);
+    printf("Proceso completado con exito.\n");
+
+    return 0;
+}
+
+// --- Implementaciones de funciones ---
+
+void FIR_Process_Buffer(float *in, float *out, int numElem, float *state, int *pIdx, const float *taps, int numTaps) {
+    for (int i = 0; i < numElem; i++) {
+        state[*pIdx] = in[i];
+        float acc = 0.0f;
+        int currIdx = *pIdx;
+        for (int j = 0; j < numTaps; j++) {
+            acc += taps[j] * state[currIdx];
+            if (--currIdx < 0) currIdx = numTaps - 1;
+        }
+        out[i] = acc;
+        *pIdx = (*pIdx + 1) % numTaps;
+    }
+}
+
+float RMS_calculator(float *s, int numElem) {
+    float acc = 0.0f;
+    for (int i = 0; i < numElem; i++) {
+        acc += s[i] * s[i];
+    }
+    return sqrtf(acc / (float)numElem);
+}
+\end{lstlisting}
+
+\noindent A partir de los archivos .txt generados se pueden comparar los resultados a partir del siguiente código:
+
+
+\vspace{0.5cm}
+\begin{lstlisting}[style=mystyle, caption={Código empleado para comparar golden y salida de código en C.}, label={lst:filtro + ds}]
+import numpy as np
+import matplotlib.pyplot as plt
+
+def verificar_estable(file_c, file_golden, samples_to_skip=3000):
+    try:
+        # 1. Cargar datos
+        data_c = np.loadtxt(file_c)
+        data_golden = np.loadtxt(file_golden)
+        
+        # Sincronizar tamanos
+        min_len = min(len(data_c), len(data_golden))
+        
+        # 2. Recortar la parte del transitorio inicial
+        # Saltamos las primeras N muestras (ej: 3000 muestras = 3 bloques)
+        if min_len <= samples_to_skip:
+            print("Error: El archivo es demasiado corto para saltar tantas muestras.")
+            return
+
+        c_estable = data_c[samples_to_skip:min_len]
+        g_estable = data_golden[samples_to_skip:min_len]
+        muestras = np.arange(samples_to_skip, min_len)
+
+        # 3. Calculo de error en zona estable
+        error = np.abs(c_estable - g_estable)
+        max_err = np.max(error)
+        mean_err = np.mean(error)
+
+        print(f"--- Verificacion (Zona Estable: muestras {samples_to_skip} a {min_len}) ---")
+        print(f"Error maximo: {max_err} LSB")
+        print(f"Error medio: {mean_err:.4f} LSB")
+
+        # 4. Grafica limpia
+        plt.figure(figsize=(12, 7))
+
+        plt.subplot(2, 1, 1)
+        plt.plot(muestras, g_estable, label='Golden Model', color='forestgreen', linewidth=1.5)
+        plt.plot(muestras, c_estable, label='Output C (Estable)', color='crimson', linestyle='--', alpha=0.8)
+        plt.title(f'Comparacion en Regimen Permanente (Saltando {samples_to_skip} muestras)')
+        plt.ylabel('Valor DAC (0-4095)')
+        plt.legend()
+        plt.grid(True, which='both', linestyle='--', alpha=0.5)
+
+        plt.subplot(2, 1, 2)
+        plt.fill_between(muestras, error, color='orange', alpha=0.3, label='Area de Error')
+        plt.plot(muestras, error, color='darkorange', linewidth=1)
+        plt.title('Diferencia Residual (Precision Numerica)')
+        plt.xlabel('Numero de Muestra')
+        plt.ylabel('Error (LSB)')
+        plt.ylim(0, max(50, max_err + 5)) # Zoom en el error
+        plt.legend()
+        plt.grid(True, which='both', linestyle='--', alpha=0.5)
+
+        plt.tight_layout()
+        plt.show()
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+if __name__ == "__main__":
+    verificar_estable("salida_c.txt", "golden_reference.txt", samples_to_skip=3000)
+\end{lstlisting}
+
+\noindent obteniendo así:
+
+
+\vspace{0.5cm}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = \textwidth]{Imagenes/3_THD/comparacion_C_Py.png}
+  \caption{Comparativa entre salida en código C y golden model de Python.}
+  \label{fig: C vs Py}
+\end{figure}
+
+\noindent donde se observa un error medio de 7.57LSB. De este modo se demuestra que el tratamiento de datos es el adecuado. Sin embargo ha de existir una falencia en la lectura y/o escritura del ADC/DAC respectivamente. 
+

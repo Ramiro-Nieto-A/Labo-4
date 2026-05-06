@@ -1,0 +1,14 @@
+../source/ADC.c:9:6:ADC_Init	64	static
+../source/ADC.c:28:6:ADC_SetResolution	0	static
+../source/ADC.c:33:6:ADC_SetCycles	0	static
+../source/ADC.c:48:6:ADC_SetInterruptMode	0	static
+../source/ADC.c:56:6:ADC_IsInterruptPending	0	static
+../source/ADC.c:61:6:ADC_ClearInterruptFlag	0	static
+../source/ADC.c:68:11:ADC_GetResolution	0	static
+../source/ADC.c:75:13:ADC_GetSCycles	0	static
+../source/ADC.c:83:6:ADC_SetHardwareAverage	0	static
+../source/ADC.c:95:11:ADC_GetHardwareAverage	0	static
+../source/ADC.c:103:6:ADC_Calibrate	64	static
+../source/ADC.c:179:6:ADC_Start	4	static
+../source/ADC.c:189:6:ADC_IsReady	0	static
+../source/ADC.c:194:11:ADC_getData	0	static

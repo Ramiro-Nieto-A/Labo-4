@@ -1,0 +1,451 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 1
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 6
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.syntax unified
+  17              		.file	"GPIO.c"
+  18              		.text
+  19              	.Ltext0:
+  20              		.cfi_sections	.debug_frame
+  21              		.section	.text.GPIO_Init,"ax",%progbits
+  22              		.align	2
+  23              		.global	GPIO_Init
+  24              		.thumb
+  25              		.thumb_func
+  27              	GPIO_Init:
+  28              	.LFB123:
+  29              		.file 1 "../source/GPIO.c"
+   1:../source/GPIO.c **** 
+   2:../source/GPIO.c **** #include "GPIO.h"
+   3:../source/GPIO.c **** 
+   4:../source/GPIO.c **** void GPIO_Init (void)
+   5:../source/GPIO.c **** {
+  30              		.loc 1 5 0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 1, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  35 0000 80B4     		push	{r7}
+  36              		.cfi_def_cfa_offset 4
+  37              		.cfi_offset 7, -4
+  38 0002 00AF     		add	r7, sp, #0
+  39              		.cfi_def_cfa_register 7
+   6:../source/GPIO.c **** 	/*
+   7:../source/GPIO.c **** 	 * TO DO
+   8:../source/GPIO.c **** 	 */
+   9:../source/GPIO.c **** }
+  40              		.loc 1 9 0
+  41 0004 00BF     		nop
+  42 0006 BD46     		mov	sp, r7
+  43              		.cfi_def_cfa_register 13
+  44              		@ sp needed
+  45 0008 5DF8047B 		ldr	r7, [sp], #4
+  46              		.cfi_restore 7
+  47              		.cfi_def_cfa_offset 0
+  48 000c 7047     		bx	lr
+  49              		.cfi_endproc
+  50              	.LFE123:
+  52 000e 00BF     		.section	.text.GPIO_SetDirection,"ax",%progbits
+  53              		.align	2
+  54              		.global	GPIO_SetDirection
+  55              		.thumb
+  56              		.thumb_func
+  58              	GPIO_SetDirection:
+  59              	.LFB124:
+  10:../source/GPIO.c **** 
+  11:../source/GPIO.c **** //void GPIO_SetDirection (GPIO_t gpio, GPIOMask_t mask, GPIODirection_t direction)
+  12:../source/GPIO.c **** //{
+  13:../source/GPIO.c **** //	gpio->PDDR = (gpio->PDDR & ~mask) | (direction & mask);
+  14:../source/GPIO.c **** //}
+  15:../source/GPIO.c **** 
+  16:../source/GPIO.c **** void GPIO_SetDirection (GPIO_t gpio, GPIOMask_t pin, GPIODirection_t direction)
+  17:../source/GPIO.c **** {
+  60              		.loc 1 17 0
+  61              		.cfi_startproc
+  62              		@ args = 0, pretend = 0, frame = 16
+  63              		@ frame_needed = 1, uses_anonymous_args = 0
+  64              		@ link register save eliminated.
+  65 0000 80B4     		push	{r7}
+  66              		.cfi_def_cfa_offset 4
+  67              		.cfi_offset 7, -4
+  68 0002 85B0     		sub	sp, sp, #20
+  69              		.cfi_def_cfa_offset 24
+  70 0004 00AF     		add	r7, sp, #0
+  71              		.cfi_def_cfa_register 7
+  72 0006 F860     		str	r0, [r7, #12]
+  73 0008 B960     		str	r1, [r7, #8]
+  74 000a 7A60     		str	r2, [r7, #4]
+  18:../source/GPIO.c **** 	gpio->PDDR = (gpio->PDDR & ~(1<<pin) ) | (direction & (1 << pin));
+  75              		.loc 1 18 0
+  76 000c FB68     		ldr	r3, [r7, #12]
+  77 000e 5B69     		ldr	r3, [r3, #20]
+  78 0010 0121     		movs	r1, #1
+  79 0012 BA68     		ldr	r2, [r7, #8]
+  80 0014 01FA02F2 		lsl	r2, r1, r2
+  81 0018 D243     		mvns	r2, r2
+  82 001a 1A40     		ands	r2, r2, r3
+  83 001c 0121     		movs	r1, #1
+  84 001e BB68     		ldr	r3, [r7, #8]
+  85 0020 01FA03F3 		lsl	r3, r1, r3
+  86 0024 1946     		mov	r1, r3
+  87 0026 7B68     		ldr	r3, [r7, #4]
+  88 0028 0B40     		ands	r3, r3, r1
+  89 002a 1A43     		orrs	r2, r2, r3
+  90 002c FB68     		ldr	r3, [r7, #12]
+  91 002e 5A61     		str	r2, [r3, #20]
+  19:../source/GPIO.c **** }
+  92              		.loc 1 19 0
+  93 0030 00BF     		nop
+  94 0032 1437     		adds	r7, r7, #20
+  95              		.cfi_def_cfa_offset 4
+  96 0034 BD46     		mov	sp, r7
+  97              		.cfi_def_cfa_register 13
+  98              		@ sp needed
+  99 0036 5DF8047B 		ldr	r7, [sp], #4
+ 100              		.cfi_restore 7
+ 101              		.cfi_def_cfa_offset 0
+ 102 003a 7047     		bx	lr
+ 103              		.cfi_endproc
+ 104              	.LFE124:
+ 106              		.section	.text.GPIO_GetDirection,"ax",%progbits
+ 107              		.align	2
+ 108              		.global	GPIO_GetDirection
+ 109              		.thumb
+ 110              		.thumb_func
+ 112              	GPIO_GetDirection:
+ 113              	.LFB125:
+  20:../source/GPIO.c **** 
+  21:../source/GPIO.c **** GPIODirection_t GPIO_GetDirection (GPIO_t gpio, GPIOMask_t mask)
+  22:../source/GPIO.c **** {
+ 114              		.loc 1 22 0
+ 115              		.cfi_startproc
+ 116              		@ args = 0, pretend = 0, frame = 8
+ 117              		@ frame_needed = 1, uses_anonymous_args = 0
+ 118              		@ link register save eliminated.
+ 119 0000 80B4     		push	{r7}
+ 120              		.cfi_def_cfa_offset 4
+ 121              		.cfi_offset 7, -4
+ 122 0002 83B0     		sub	sp, sp, #12
+ 123              		.cfi_def_cfa_offset 16
+ 124 0004 00AF     		add	r7, sp, #0
+ 125              		.cfi_def_cfa_register 7
+ 126 0006 7860     		str	r0, [r7, #4]
+ 127 0008 3960     		str	r1, [r7]
+  23:../source/GPIO.c **** 	return gpio->PDDR & mask;
+ 128              		.loc 1 23 0
+ 129 000a 7B68     		ldr	r3, [r7, #4]
+ 130 000c 5A69     		ldr	r2, [r3, #20]
+ 131 000e 3B68     		ldr	r3, [r7]
+ 132 0010 1340     		ands	r3, r3, r2
+  24:../source/GPIO.c **** }
+ 133              		.loc 1 24 0
+ 134 0012 1846     		mov	r0, r3
+ 135 0014 0C37     		adds	r7, r7, #12
+ 136              		.cfi_def_cfa_offset 4
+ 137 0016 BD46     		mov	sp, r7
+ 138              		.cfi_def_cfa_register 13
+ 139              		@ sp needed
+ 140 0018 5DF8047B 		ldr	r7, [sp], #4
+ 141              		.cfi_restore 7
+ 142              		.cfi_def_cfa_offset 0
+ 143 001c 7047     		bx	lr
+ 144              		.cfi_endproc
+ 145              	.LFE125:
+ 147 001e 00BF     		.section	.text.GPIO_Write,"ax",%progbits
+ 148              		.align	2
+ 149              		.global	GPIO_Write
+ 150              		.thumb
+ 151              		.thumb_func
+ 153              	GPIO_Write:
+ 154              	.LFB126:
+  25:../source/GPIO.c **** 
+  26:../source/GPIO.c **** //void GPIO_Write (GPIO_t gpio, GPIOMask_t mask, GPIOData_t data)
+  27:../source/GPIO.c **** //{
+  28:../source/GPIO.c **** //	gpio->PDOR = (gpio->PDOR & ~mask) | (data & mask);
+  29:../source/GPIO.c **** //}
+  30:../source/GPIO.c **** 
+  31:../source/GPIO.c **** void GPIO_Write (GPIO_t gpio, GPIOMask_t pin, GPIOData_t data)
+  32:../source/GPIO.c **** {
+ 155              		.loc 1 32 0
+ 156              		.cfi_startproc
+ 157              		@ args = 0, pretend = 0, frame = 16
+ 158              		@ frame_needed = 1, uses_anonymous_args = 0
+ 159              		@ link register save eliminated.
+ 160 0000 80B4     		push	{r7}
+ 161              		.cfi_def_cfa_offset 4
+ 162              		.cfi_offset 7, -4
+ 163 0002 85B0     		sub	sp, sp, #20
+ 164              		.cfi_def_cfa_offset 24
+ 165 0004 00AF     		add	r7, sp, #0
+ 166              		.cfi_def_cfa_register 7
+ 167 0006 F860     		str	r0, [r7, #12]
+ 168 0008 B960     		str	r1, [r7, #8]
+ 169 000a 7A60     		str	r2, [r7, #4]
+  33:../source/GPIO.c **** 	gpio->PDOR = (gpio->PDOR & ~(1<<pin)) | (data & (1 << pin));
+ 170              		.loc 1 33 0
+ 171 000c FB68     		ldr	r3, [r7, #12]
+ 172 000e 1B68     		ldr	r3, [r3]
+ 173 0010 0121     		movs	r1, #1
+ 174 0012 BA68     		ldr	r2, [r7, #8]
+ 175 0014 01FA02F2 		lsl	r2, r1, r2
+ 176 0018 D243     		mvns	r2, r2
+ 177 001a 1A40     		ands	r2, r2, r3
+ 178 001c 0121     		movs	r1, #1
+ 179 001e BB68     		ldr	r3, [r7, #8]
+ 180 0020 01FA03F3 		lsl	r3, r1, r3
+ 181 0024 1946     		mov	r1, r3
+ 182 0026 7B68     		ldr	r3, [r7, #4]
+ 183 0028 0B40     		ands	r3, r3, r1
+ 184 002a 1A43     		orrs	r2, r2, r3
+ 185 002c FB68     		ldr	r3, [r7, #12]
+ 186 002e 1A60     		str	r2, [r3]
+  34:../source/GPIO.c **** }
+ 187              		.loc 1 34 0
+ 188 0030 00BF     		nop
+ 189 0032 1437     		adds	r7, r7, #20
+ 190              		.cfi_def_cfa_offset 4
+ 191 0034 BD46     		mov	sp, r7
+ 192              		.cfi_def_cfa_register 13
+ 193              		@ sp needed
+ 194 0036 5DF8047B 		ldr	r7, [sp], #4
+ 195              		.cfi_restore 7
+ 196              		.cfi_def_cfa_offset 0
+ 197 003a 7047     		bx	lr
+ 198              		.cfi_endproc
+ 199              	.LFE126:
+ 201              		.section	.text.GPIO_Read,"ax",%progbits
+ 202              		.align	2
+ 203              		.global	GPIO_Read
+ 204              		.thumb
+ 205              		.thumb_func
+ 207              	GPIO_Read:
+ 208              	.LFB127:
+  35:../source/GPIO.c **** 
+  36:../source/GPIO.c **** //GPIOData_t GPIO_Read (GPIO_t gpio, GPIOMask_t mask)
+  37:../source/GPIO.c **** //{
+  38:../source/GPIO.c **** //	return gpio->PDIR & mask;
+  39:../source/GPIO.c **** //}
+  40:../source/GPIO.c **** 
+  41:../source/GPIO.c **** GPIOData_t GPIO_Read (GPIO_t gpio, GPIOMask_t pin)
+  42:../source/GPIO.c **** {
+ 209              		.loc 1 42 0
+ 210              		.cfi_startproc
+ 211              		@ args = 0, pretend = 0, frame = 8
+ 212              		@ frame_needed = 1, uses_anonymous_args = 0
+ 213              		@ link register save eliminated.
+ 214 0000 80B4     		push	{r7}
+ 215              		.cfi_def_cfa_offset 4
+ 216              		.cfi_offset 7, -4
+ 217 0002 83B0     		sub	sp, sp, #12
+ 218              		.cfi_def_cfa_offset 16
+ 219 0004 00AF     		add	r7, sp, #0
+ 220              		.cfi_def_cfa_register 7
+ 221 0006 7860     		str	r0, [r7, #4]
+ 222 0008 3960     		str	r1, [r7]
+  43:../source/GPIO.c **** 	return gpio->PDIR & (1<<pin);
+ 223              		.loc 1 43 0
+ 224 000a 7B68     		ldr	r3, [r7, #4]
+ 225 000c 1B69     		ldr	r3, [r3, #16]
+ 226 000e 0121     		movs	r1, #1
+ 227 0010 3A68     		ldr	r2, [r7]
+ 228 0012 01FA02F2 		lsl	r2, r1, r2
+ 229 0016 1340     		ands	r3, r3, r2
+  44:../source/GPIO.c **** }
+ 230              		.loc 1 44 0
+ 231 0018 1846     		mov	r0, r3
+ 232 001a 0C37     		adds	r7, r7, #12
+ 233              		.cfi_def_cfa_offset 4
+ 234 001c BD46     		mov	sp, r7
+ 235              		.cfi_def_cfa_register 13
+ 236              		@ sp needed
+ 237 001e 5DF8047B 		ldr	r7, [sp], #4
+ 238              		.cfi_restore 7
+ 239              		.cfi_def_cfa_offset 0
+ 240 0022 7047     		bx	lr
+ 241              		.cfi_endproc
+ 242              	.LFE127:
+ 244              		.section	.text.GPIO_Set,"ax",%progbits
+ 245              		.align	2
+ 246              		.global	GPIO_Set
+ 247              		.thumb
+ 248              		.thumb_func
+ 250              	GPIO_Set:
+ 251              	.LFB128:
+  45:../source/GPIO.c **** 
+  46:../source/GPIO.c **** 
+  47:../source/GPIO.c **** 
+  48:../source/GPIO.c **** 
+  49:../source/GPIO.c **** void GPIO_Set (GPIO_t gpio, GPIOMask_t mask)
+  50:../source/GPIO.c **** {
+ 252              		.loc 1 50 0
+ 253              		.cfi_startproc
+ 254              		@ args = 0, pretend = 0, frame = 8
+ 255              		@ frame_needed = 1, uses_anonymous_args = 0
+ 256              		@ link register save eliminated.
+ 257 0000 80B4     		push	{r7}
+ 258              		.cfi_def_cfa_offset 4
+ 259              		.cfi_offset 7, -4
+ 260 0002 83B0     		sub	sp, sp, #12
+ 261              		.cfi_def_cfa_offset 16
+ 262 0004 00AF     		add	r7, sp, #0
+ 263              		.cfi_def_cfa_register 7
+ 264 0006 7860     		str	r0, [r7, #4]
+ 265 0008 3960     		str	r1, [r7]
+  51:../source/GPIO.c **** 	gpio->PSOR = mask;
+ 266              		.loc 1 51 0
+ 267 000a 7B68     		ldr	r3, [r7, #4]
+ 268 000c 3A68     		ldr	r2, [r7]
+ 269 000e 5A60     		str	r2, [r3, #4]
+  52:../source/GPIO.c **** }
+ 270              		.loc 1 52 0
+ 271 0010 00BF     		nop
+ 272 0012 0C37     		adds	r7, r7, #12
+ 273              		.cfi_def_cfa_offset 4
+ 274 0014 BD46     		mov	sp, r7
+ 275              		.cfi_def_cfa_register 13
+ 276              		@ sp needed
+ 277 0016 5DF8047B 		ldr	r7, [sp], #4
+ 278              		.cfi_restore 7
+ 279              		.cfi_def_cfa_offset 0
+ 280 001a 7047     		bx	lr
+ 281              		.cfi_endproc
+ 282              	.LFE128:
+ 284              		.section	.text.GPIO_Clear,"ax",%progbits
+ 285              		.align	2
+ 286              		.global	GPIO_Clear
+ 287              		.thumb
+ 288              		.thumb_func
+ 290              	GPIO_Clear:
+ 291              	.LFB129:
+  53:../source/GPIO.c **** 
+  54:../source/GPIO.c **** void GPIO_Clear	(GPIO_t gpio, GPIOMask_t mask)
+  55:../source/GPIO.c **** {
+ 292              		.loc 1 55 0
+ 293              		.cfi_startproc
+ 294              		@ args = 0, pretend = 0, frame = 8
+ 295              		@ frame_needed = 1, uses_anonymous_args = 0
+ 296              		@ link register save eliminated.
+ 297 0000 80B4     		push	{r7}
+ 298              		.cfi_def_cfa_offset 4
+ 299              		.cfi_offset 7, -4
+ 300 0002 83B0     		sub	sp, sp, #12
+ 301              		.cfi_def_cfa_offset 16
+ 302 0004 00AF     		add	r7, sp, #0
+ 303              		.cfi_def_cfa_register 7
+ 304 0006 7860     		str	r0, [r7, #4]
+ 305 0008 3960     		str	r1, [r7]
+  56:../source/GPIO.c **** 	gpio->PCOR = mask;
+ 306              		.loc 1 56 0
+ 307 000a 7B68     		ldr	r3, [r7, #4]
+ 308 000c 3A68     		ldr	r2, [r7]
+ 309 000e 9A60     		str	r2, [r3, #8]
+  57:../source/GPIO.c **** }
+ 310              		.loc 1 57 0
+ 311 0010 00BF     		nop
+ 312 0012 0C37     		adds	r7, r7, #12
+ 313              		.cfi_def_cfa_offset 4
+ 314 0014 BD46     		mov	sp, r7
+ 315              		.cfi_def_cfa_register 13
+ 316              		@ sp needed
+ 317 0016 5DF8047B 		ldr	r7, [sp], #4
+ 318              		.cfi_restore 7
+ 319              		.cfi_def_cfa_offset 0
+ 320 001a 7047     		bx	lr
+ 321              		.cfi_endproc
+ 322              	.LFE129:
+ 324              		.section	.text.GPIO_Toggle,"ax",%progbits
+ 325              		.align	2
+ 326              		.global	GPIO_Toggle
+ 327              		.thumb
+ 328              		.thumb_func
+ 330              	GPIO_Toggle:
+ 331              	.LFB130:
+  58:../source/GPIO.c **** 
+  59:../source/GPIO.c **** void GPIO_Toggle (GPIO_t gpio, GPIOMask_t mask)
+  60:../source/GPIO.c **** {
+ 332              		.loc 1 60 0
+ 333              		.cfi_startproc
+ 334              		@ args = 0, pretend = 0, frame = 8
+ 335              		@ frame_needed = 1, uses_anonymous_args = 0
+ 336              		@ link register save eliminated.
+ 337 0000 80B4     		push	{r7}
+ 338              		.cfi_def_cfa_offset 4
+ 339              		.cfi_offset 7, -4
+ 340 0002 83B0     		sub	sp, sp, #12
+ 341              		.cfi_def_cfa_offset 16
+ 342 0004 00AF     		add	r7, sp, #0
+ 343              		.cfi_def_cfa_register 7
+ 344 0006 7860     		str	r0, [r7, #4]
+ 345 0008 3960     		str	r1, [r7]
+  61:../source/GPIO.c **** 	gpio->PTOR = mask;
+ 346              		.loc 1 61 0
+ 347 000a 7B68     		ldr	r3, [r7, #4]
+ 348 000c 3A68     		ldr	r2, [r7]
+ 349 000e DA60     		str	r2, [r3, #12]
+  62:../source/GPIO.c **** }
+ 350              		.loc 1 62 0
+ 351 0010 00BF     		nop
+ 352 0012 0C37     		adds	r7, r7, #12
+ 353              		.cfi_def_cfa_offset 4
+ 354 0014 BD46     		mov	sp, r7
+ 355              		.cfi_def_cfa_register 13
+ 356              		@ sp needed
+ 357 0016 5DF8047B 		ldr	r7, [sp], #4
+ 358              		.cfi_restore 7
+ 359              		.cfi_def_cfa_offset 0
+ 360 001a 7047     		bx	lr
+ 361              		.cfi_endproc
+ 362              	.LFE130:
+ 364              		.text
+ 365              	.Letext0:
+ 366              		.file 2 "/usr/local/mcuxpressoide-10.0.2_411/ide/tools/redlib/include/stdint.h"
+ 367              		.file 3 "/home/jacoby/Documents/MCUXpresso_10.0.2_411/workspace/ccc/CMSIS/MK64F12.h"
+ 368              		.file 4 "../source/GPIO.h"
+ 369              		.file 5 "/home/jacoby/Documents/MCUXpresso_10.0.2_411/workspace/ccc/CMSIS/core_cm4.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 GPIO.c
+     /tmp/cca7ql89.s:22     .text.GPIO_Init:00000000 $t
+     /tmp/cca7ql89.s:27     .text.GPIO_Init:00000000 GPIO_Init
+     /tmp/cca7ql89.s:53     .text.GPIO_SetDirection:00000000 $t
+     /tmp/cca7ql89.s:58     .text.GPIO_SetDirection:00000000 GPIO_SetDirection
+     /tmp/cca7ql89.s:107    .text.GPIO_GetDirection:00000000 $t
+     /tmp/cca7ql89.s:112    .text.GPIO_GetDirection:00000000 GPIO_GetDirection
+     /tmp/cca7ql89.s:148    .text.GPIO_Write:00000000 $t
+     /tmp/cca7ql89.s:153    .text.GPIO_Write:00000000 GPIO_Write
+     /tmp/cca7ql89.s:202    .text.GPIO_Read:00000000 $t
+     /tmp/cca7ql89.s:207    .text.GPIO_Read:00000000 GPIO_Read
+     /tmp/cca7ql89.s:245    .text.GPIO_Set:00000000 $t
+     /tmp/cca7ql89.s:250    .text.GPIO_Set:00000000 GPIO_Set
+     /tmp/cca7ql89.s:285    .text.GPIO_Clear:00000000 $t
+     /tmp/cca7ql89.s:290    .text.GPIO_Clear:00000000 GPIO_Clear
+     /tmp/cca7ql89.s:325    .text.GPIO_Toggle:00000000 $t
+     /tmp/cca7ql89.s:330    .text.GPIO_Toggle:00000000 GPIO_Toggle
+                     .debug_frame:00000010 $d
+                           .group:00000000 wm4.0.6bf525fb3e733fd18569950f60b7deed
+                           .group:00000000 wm4.redlib_version.h.16.f905717e4b3a91dcbdbb631865150df4
+                           .group:00000000 wm4.libconfigarm.h.18.1ad1d24f96d0dc8c4cf52dc19b0aa2c7
+                           .group:00000000 wm4.stdint.h.30.079ac5d9930c76ab215c1ab68adcbe08
+                           .group:00000000 wm4.stdbool.h.15.fddf1cb2402fd739d8e2516677869231
+                           .group:00000000 wm4.fsl_device_registers.h.32.f10b25a7fd7ad45b9a40904c33f28816
+                           .group:00000000 wm4.MK64F12.h.105.e884e5c80776532d2ec0f5c21e2ea7cb
+                           .group:00000000 wm4.core_cm4.h.42.42f38327ee0970d80f60117e6a3ba2b0
+                           .group:00000000 wm4.cmsis_gcc.h.36.39970cb43ce4b53c82644a1f9bc2eab9
+                           .group:00000000 wm4.core_cm4.h.223.7b48c9958ef5573320c4765074c8b0ce
+                           .group:00000000 wm4.system_MK64F12.h.109.c6d21568e03be21b21c922eb7345d6e3
+                           .group:00000000 wm4.MK64F12.h.475.cafa8e1e521f96f0b72de286863a6df7
+                           .group:00000000 wm4.MK64F12_features.h.92.512cea46d882153168efeec0bc3a9da7
+                           .group:00000000 wm4.hardware.h.27.0531344360c1b4ef1fba1263e2a4c488
+                           .group:00000000 wm4.GPIO.h.10.25ed560e26490037f295f5f6fef61c9b
+
+NO UNDEFINED SYMBOLS

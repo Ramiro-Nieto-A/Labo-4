@@ -1,0 +1,545 @@
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 2
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"SYSTICK.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "../source/SYSTICK.c"
+  20              		.section	.text.SysTick_Handler,"ax",%progbits
+  21              		.align	1
+  22              		.p2align 2,,3
+  23              		.global	SysTick_Handler
+  24              		.syntax unified
+  25              		.thumb
+  26              		.thumb_func
+  28              	SysTick_Handler:
+  29              	.LFB126:
+   1:../source/SYSTICK.c **** /*
+   2:../source/SYSTICK.c ****  * SYSTICK.c
+   3:../source/SYSTICK.c ****  *
+   4:../source/SYSTICK.c ****  *  Created on: Feb 9, 2025
+   5:../source/SYSTICK.c ****  *      Author: jacoby
+   6:../source/SYSTICK.c ****  */
+   7:../source/SYSTICK.c **** #include "hardware.h"
+   8:../source/SYSTICK.c **** #include "UART.h"
+   9:../source/SYSTICK.c **** #include "ADC.h"
+  10:../source/SYSTICK.c **** #include <stdio.h>
+  11:../source/SYSTICK.c **** #include "SYSTICK.h"
+  12:../source/SYSTICK.c **** #include "ports.h"
+  13:../source/SYSTICK.c **** #include "DAC.h"
+  14:../source/SYSTICK.c **** 
+  15:../source/SYSTICK.c **** void blink_led(void);
+  16:../source/SYSTICK.c **** void ADC_TEST (void);
+  17:../source/SYSTICK.c **** void DAC_TEST (void);
+  18:../source/SYSTICK.c **** 
+  19:../source/SYSTICK.c **** extern volatile bool nextsample;
+  20:../source/SYSTICK.c **** extern volatile int16_t adc_in;
+  21:../source/SYSTICK.c **** extern volatile int16_t dac_out;
+  22:../source/SYSTICK.c **** 
+  23:../source/SYSTICK.c **** 
+  24:../source/SYSTICK.c **** __ISR__  SysTick_Handler (void)
+  25:../source/SYSTICK.c **** {
+  30              		.loc 1 25 1 view -0
+  31              		.cfi_startproc
+  32              		@ Stack Align: May be called with mis-aligned SP.
+  33              		@ args = 0, pretend = 0, frame = 0
+  34              		@ frame_needed = 0, uses_anonymous_args = 0
+  26:../source/SYSTICK.c **** 	Toggle(TP1); // Measure Sampling period
+  35              		.loc 1 26 2 view .LVU1
+  25:../source/SYSTICK.c **** 	Toggle(TP1); // Measure Sampling period
+  36              		.loc 1 25 1 is_stmt 0 view .LVU2
+  37 0000 6846     		mov	r0, sp
+  38              		.cfi_register 13, 0
+  39 0002 20F00701 		bic	r1, r0, #7
+  40 0006 8D46     		mov	sp, r1
+  41 0008 19B5     		push	{r0, r3, r4, lr}
+  42              		.cfi_def_cfa_offset 16
+  43              		.cfi_offset 13, -16
+  44              		.cfi_offset 3, -12
+  45              		.cfi_offset 4, -8
+  46              		.cfi_offset 14, -4
+  47              		.loc 1 26 2 view .LVU3
+  48 000a 0B20     		movs	r0, #11
+  49 000c FFF7FEFF 		bl	Toggle
+  50              	.LVL0:
+  27:../source/SYSTICK.c **** 
+  28:../source/SYSTICK.c **** 	DAC_SetData(DAC0, dac_out);
+  51              		.loc 1 28 2 is_stmt 1 view .LVU4
+  52 0010 144B     		ldr	r3, .L8
+  53 0012 1548     		ldr	r0, .L8+4
+  54 0014 1988     		ldrh	r1, [r3]
+  29:../source/SYSTICK.c **** 
+  30:../source/SYSTICK.c **** 	ADC_Start(ADC0, ADC_0_DP1_CHANNEL, ADC_mA);
+  31:../source/SYSTICK.c **** 	while(!ADC_IsReady(ADC0));
+  55              		.loc 1 31 9 is_stmt 0 discriminator 1 view .LVU5
+  56 0016 154C     		ldr	r4, .L8+8
+  28:../source/SYSTICK.c **** 
+  57              		.loc 1 28 2 view .LVU6
+  58 0018 89B2     		uxth	r1, r1
+  59 001a FFF7FEFF 		bl	DAC_SetData
+  60              	.LVL1:
+  30:../source/SYSTICK.c **** 	while(!ADC_IsReady(ADC0));
+  61              		.loc 1 30 2 is_stmt 1 view .LVU7
+  62 001e 1348     		ldr	r0, .L8+8
+  63 0020 0022     		movs	r2, #0
+  64 0022 0121     		movs	r1, #1
+  65 0024 FFF7FEFF 		bl	ADC_Start
+  66              	.LVL2:
+  67              		.loc 1 31 2 view .LVU8
+  68              	.L2:
+  69              		.loc 1 31 8 discriminator 1 view .LVU9
+  70              		.loc 1 31 9 is_stmt 0 discriminator 1 view .LVU10
+  71 0028 2046     		mov	r0, r4
+  72 002a FFF7FEFF 		bl	ADC_IsReady
+  73              	.LVL3:
+  74              		.loc 1 31 8 discriminator 1 view .LVU11
+  75 002e 0028     		cmp	r0, #0
+  76 0030 FAD0     		beq	.L2
+  32:../source/SYSTICK.c **** 		adc_in = ADC_getData(ADC0);
+  77              		.loc 1 32 3 is_stmt 1 view .LVU12
+  78              		.loc 1 32 12 is_stmt 0 view .LVU13
+  79 0032 0E48     		ldr	r0, .L8+8
+  80 0034 FFF7FEFF 		bl	ADC_getData
+  81              	.LVL4:
+  82              	.LBB4:
+  83              	.LBB5:
+  33:../source/SYSTICK.c **** 
+  34:../source/SYSTICK.c **** 	blink_led(); // User feedback to see that program is running
+  35:../source/SYSTICK.c **** 	nextsample = 1;
+  36:../source/SYSTICK.c **** }
+  37:../source/SYSTICK.c **** 
+  38:../source/SYSTICK.c **** #define Kms 100000L
+  39:../source/SYSTICK.c **** #define Kus 100L
+  40:../source/SYSTICK.c **** #define PER_ms(x)  ((x)*Kms)
+  41:../source/SYSTICK.c **** #define PER_us(x)  ((x)*Kus)
+  42:../source/SYSTICK.c **** 
+  43:../source/SYSTICK.c **** 
+  44:../source/SYSTICK.c **** static uint32_t rti_period = PER_ms(100);  // Default Sample Rate
+  45:../source/SYSTICK.c **** 
+  46:../source/SYSTICK.c **** 
+  47:../source/SYSTICK.c **** 
+  48:../source/SYSTICK.c **** // Max Reload value 2^24-1= 167.772.160 => 167.772.160 x 10ns = 1.677.721.600 ns
+  49:../source/SYSTICK.c **** //                                                            = 1,677.721.600 seg
+  50:../source/SYSTICK.c **** 
+  51:../source/SYSTICK.c **** void SysTick_Init (void)
+  52:../source/SYSTICK.c **** {
+  53:../source/SYSTICK.c **** 	SysTick->CTRL = 0x00;
+  54:../source/SYSTICK.c **** //	SysTick->LOAD = 12500000L-1;  //12499999L; // <= 125 ms @ 100Mhz - 10ns
+  55:../source/SYSTICK.c **** 	SysTick->LOAD = rti_period-1;
+  56:../source/SYSTICK.c **** 
+  57:../source/SYSTICK.c **** 	SysTick->VAL  = 0x00;
+  58:../source/SYSTICK.c **** 	SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk;
+  59:../source/SYSTICK.c **** }
+  60:../source/SYSTICK.c **** 
+  61:../source/SYSTICK.c **** 
+  62:../source/SYSTICK.c **** // This function is to show that system is running
+  63:../source/SYSTICK.c **** 
+  64:../source/SYSTICK.c **** void blink_led(void)
+  65:../source/SYSTICK.c **** {
+  66:../source/SYSTICK.c **** 
+  67:../source/SYSTICK.c **** //	static uint32_t speed=4;     // 0.5 seg @ tick =125ms
+  68:../source/SYSTICK.c **** 	static uint32_t speed=5000;  // 0.5 seg @ tick =100us
+  69:../source/SYSTICK.c **** 
+  70:../source/SYSTICK.c **** 
+  71:../source/SYSTICK.c **** 	if (speed==0)
+  84              		.loc 1 71 11 view .LVU14
+  85 0038 0D4A     		ldr	r2, .L8+12
+  86              	.LBE5:
+  87              	.LBE4:
+  32:../source/SYSTICK.c **** 		adc_in = ADC_getData(ADC0);
+  88              		.loc 1 32 10 discriminator 1 view .LVU15
+  89 003a 0E49     		ldr	r1, .L8+16
+  90              	.LBB10:
+  91              	.LBB6:
+  92              		.loc 1 71 11 view .LVU16
+  93 003c 1368     		ldr	r3, [r2]
+  94              	.LBE6:
+  95              	.LBE10:
+  32:../source/SYSTICK.c **** 		adc_in = ADC_getData(ADC0);
+  96              		.loc 1 32 12 discriminator 1 view .LVU17
+  97 003e 00B2     		sxth	r0, r0
+  32:../source/SYSTICK.c **** 		adc_in = ADC_getData(ADC0);
+  98              		.loc 1 32 10 discriminator 1 view .LVU18
+  99 0040 0880     		strh	r0, [r1]	@ movhi
+  34:../source/SYSTICK.c **** 	nextsample = 1;
+ 100              		.loc 1 34 2 is_stmt 1 view .LVU19
+ 101              	.LBB11:
+ 102              	.LBI4:
+  64:../source/SYSTICK.c **** {
+ 103              		.loc 1 64 6 view .LVU20
+ 104              	.LBB7:
+  68:../source/SYSTICK.c **** 
+ 105              		.loc 1 68 2 view .LVU21
+ 106              		.loc 1 71 2 view .LVU22
+ 107              		.loc 1 71 5 is_stmt 0 view .LVU23
+ 108 0042 43B1     		cbz	r3, .L3
+  72:../source/SYSTICK.c **** 	{
+  73:../source/SYSTICK.c **** 
+  74:../source/SYSTICK.c **** 		PTB->PTOR = (1<<PIN_BLUE_LED)|(1<<PIN_RED_LED);
+  75:../source/SYSTICK.c **** 		speed=5000;
+  76:../source/SYSTICK.c **** 
+  77:../source/SYSTICK.c **** 	}
+  78:../source/SYSTICK.c **** 
+  79:../source/SYSTICK.c **** 	speed--;
+ 109              		.loc 1 79 7 view .LVU24
+ 110 0044 013B     		subs	r3, r3, #1
+ 111              	.L4:
+ 112              		.loc 1 79 2 is_stmt 1 view .LVU25
+ 113              	.LBE7:
+ 114              	.LBE11:
+  35:../source/SYSTICK.c **** }
+ 115              		.loc 1 35 13 is_stmt 0 view .LVU26
+ 116 0046 0C49     		ldr	r1, .L8+20
+ 117              	.LBB12:
+ 118              	.LBB8:
+ 119              		.loc 1 79 7 view .LVU27
+ 120 0048 1360     		str	r3, [r2]
+ 121              	.LBE8:
+ 122              	.LBE12:
+  35:../source/SYSTICK.c **** }
+ 123              		.loc 1 35 2 is_stmt 1 view .LVU28
+  35:../source/SYSTICK.c **** }
+ 124              		.loc 1 35 13 is_stmt 0 view .LVU29
+ 125 004a 0120     		movs	r0, #1
+ 126 004c 0870     		strb	r0, [r1]
+  36:../source/SYSTICK.c **** 
+ 127              		.loc 1 36 1 view .LVU30
+ 128 004e BDE81940 		pop	{r0, r3, r4, lr}
+ 129              		.cfi_remember_state
+ 130              		.cfi_restore 14
+ 131              		.cfi_restore 4
+ 132              		.cfi_restore 3
+ 133              		.cfi_restore 0
+ 134              		.cfi_def_cfa_offset 0
+ 135 0052 8546     		mov	sp, r0
+ 136 0054 7047     		bx	lr
+ 137              	.L3:
+ 138              		.cfi_restore_state
+ 139              	.LBB13:
+ 140              	.LBB9:
+  74:../source/SYSTICK.c **** 		speed=5000;
+ 141              		.loc 1 74 3 is_stmt 1 view .LVU31
+  74:../source/SYSTICK.c **** 		speed=5000;
+ 142              		.loc 1 74 13 is_stmt 0 view .LVU32
+ 143 0056 094B     		ldr	r3, .L8+24
+ 144 0058 4FF4C001 		mov	r1, #6291456
+ 145 005c D964     		str	r1, [r3, #76]
+  75:../source/SYSTICK.c **** 
+ 146              		.loc 1 75 3 is_stmt 1 view .LVU33
+  74:../source/SYSTICK.c **** 		speed=5000;
+ 147              		.loc 1 74 13 is_stmt 0 view .LVU34
+ 148 005e 41F28733 		movw	r3, #4999
+ 149 0062 F0E7     		b	.L4
+ 150              	.L9:
+ 151              		.align	2
+ 152              	.L8:
+ 153 0064 00000000 		.word	dac_out
+ 154 0068 00C00C40 		.word	1074577408
+ 155 006c 00B00340 		.word	1073983488
+ 156 0070 00000000 		.word	speed.0
+ 157 0074 00000000 		.word	adc_in
+ 158 0078 00000000 		.word	nextsample
+ 159 007c 00F00F40 		.word	1074786304
+ 160              	.LBE9:
+ 161              	.LBE13:
+ 162              		.cfi_endproc
+ 163              	.LFE126:
+ 165              		.section	.text.SysTick_Init,"ax",%progbits
+ 166              		.align	1
+ 167              		.p2align 2,,3
+ 168              		.global	SysTick_Init
+ 169              		.syntax unified
+ 170              		.thumb
+ 171              		.thumb_func
+ 173              	SysTick_Init:
+ 174              	.LFB127:
+  52:../source/SYSTICK.c **** 	SysTick->CTRL = 0x00;
+ 175              		.loc 1 52 1 is_stmt 1 view -0
+ 176              		.cfi_startproc
+ 177              		@ args = 0, pretend = 0, frame = 0
+ 178              		@ frame_needed = 0, uses_anonymous_args = 0
+ 179              		@ link register save eliminated.
+  53:../source/SYSTICK.c **** //	SysTick->LOAD = 12500000L-1;  //12499999L; // <= 125 ms @ 100Mhz - 10ns
+ 180              		.loc 1 53 2 view .LVU36
+  53:../source/SYSTICK.c **** //	SysTick->LOAD = 12500000L-1;  //12499999L; // <= 125 ms @ 100Mhz - 10ns
+ 181              		.loc 1 53 16 is_stmt 0 view .LVU37
+ 182 0000 4FF0E023 		mov	r3, #-536813568
+ 183 0004 0021     		movs	r1, #0
+  55:../source/SYSTICK.c **** 
+ 184              		.loc 1 55 28 view .LVU38
+ 185 0006 044A     		ldr	r2, .L11
+  53:../source/SYSTICK.c **** //	SysTick->LOAD = 12500000L-1;  //12499999L; // <= 125 ms @ 100Mhz - 10ns
+ 186              		.loc 1 53 16 view .LVU39
+ 187 0008 1961     		str	r1, [r3, #16]
+  55:../source/SYSTICK.c **** 
+ 188              		.loc 1 55 2 is_stmt 1 view .LVU40
+  55:../source/SYSTICK.c **** 
+ 189              		.loc 1 55 28 is_stmt 0 view .LVU41
+ 190 000a 1268     		ldr	r2, [r2]
+  58:../source/SYSTICK.c **** }
+ 191              		.loc 1 58 16 view .LVU42
+ 192 000c 0720     		movs	r0, #7
+  55:../source/SYSTICK.c **** 
+ 193              		.loc 1 55 28 view .LVU43
+ 194 000e 013A     		subs	r2, r2, #1
+  55:../source/SYSTICK.c **** 
+ 195              		.loc 1 55 16 view .LVU44
+ 196 0010 5A61     		str	r2, [r3, #20]
+  57:../source/SYSTICK.c **** 	SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk;
+ 197              		.loc 1 57 2 is_stmt 1 view .LVU45
+  57:../source/SYSTICK.c **** 	SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk;
+ 198              		.loc 1 57 16 is_stmt 0 view .LVU46
+ 199 0012 9961     		str	r1, [r3, #24]
+  58:../source/SYSTICK.c **** }
+ 200              		.loc 1 58 2 is_stmt 1 view .LVU47
+  58:../source/SYSTICK.c **** }
+ 201              		.loc 1 58 16 is_stmt 0 view .LVU48
+ 202 0014 1861     		str	r0, [r3, #16]
+  59:../source/SYSTICK.c **** 
+ 203              		.loc 1 59 1 view .LVU49
+ 204 0016 7047     		bx	lr
+ 205              	.L12:
+ 206              		.align	2
+ 207              	.L11:
+ 208 0018 00000000 		.word	rti_period
+ 209              		.cfi_endproc
+ 210              	.LFE127:
+ 212              		.section	.text.blink_led,"ax",%progbits
+ 213              		.align	1
+ 214              		.p2align 2,,3
+ 215              		.global	blink_led
+ 216              		.syntax unified
+ 217              		.thumb
+ 218              		.thumb_func
+ 220              	blink_led:
+ 221              	.LFB128:
+  65:../source/SYSTICK.c **** 
+ 222              		.loc 1 65 1 is_stmt 1 view -0
+ 223              		.cfi_startproc
+ 224              		@ args = 0, pretend = 0, frame = 0
+ 225              		@ frame_needed = 0, uses_anonymous_args = 0
+ 226              		@ link register save eliminated.
+  68:../source/SYSTICK.c **** 
+ 227              		.loc 1 68 2 view .LVU51
+  71:../source/SYSTICK.c **** 	{
+ 228              		.loc 1 71 2 view .LVU52
+  71:../source/SYSTICK.c **** 	{
+ 229              		.loc 1 71 11 is_stmt 0 view .LVU53
+ 230 0000 064A     		ldr	r2, .L16
+ 231 0002 1368     		ldr	r3, [r2]
+  71:../source/SYSTICK.c **** 	{
+ 232              		.loc 1 71 5 view .LVU54
+ 233 0004 13B1     		cbz	r3, .L14
+ 234              		.loc 1 79 7 view .LVU55
+ 235 0006 013B     		subs	r3, r3, #1
+ 236              		.loc 1 79 2 is_stmt 1 view .LVU56
+ 237              		.loc 1 79 7 is_stmt 0 view .LVU57
+ 238 0008 1360     		str	r3, [r2]
+  80:../source/SYSTICK.c **** 
+  81:../source/SYSTICK.c **** 
+  82:../source/SYSTICK.c **** 
+  83:../source/SYSTICK.c **** }
+ 239              		.loc 1 83 1 view .LVU58
+ 240 000a 7047     		bx	lr
+ 241              	.L14:
+  74:../source/SYSTICK.c **** 		speed=5000;
+ 242              		.loc 1 74 3 is_stmt 1 view .LVU59
+  74:../source/SYSTICK.c **** 		speed=5000;
+ 243              		.loc 1 74 13 is_stmt 0 view .LVU60
+ 244 000c 044B     		ldr	r3, .L16+4
+ 245 000e 4FF4C001 		mov	r1, #6291456
+ 246 0012 D964     		str	r1, [r3, #76]
+  75:../source/SYSTICK.c **** 
+ 247              		.loc 1 75 3 is_stmt 1 view .LVU61
+  74:../source/SYSTICK.c **** 		speed=5000;
+ 248              		.loc 1 74 13 is_stmt 0 view .LVU62
+ 249 0014 41F28733 		movw	r3, #4999
+  79:../source/SYSTICK.c **** 
+ 250              		.loc 1 79 2 is_stmt 1 view .LVU63
+  79:../source/SYSTICK.c **** 
+ 251              		.loc 1 79 7 is_stmt 0 view .LVU64
+ 252 0018 1360     		str	r3, [r2]
+ 253              		.loc 1 83 1 view .LVU65
+ 254 001a 7047     		bx	lr
+ 255              	.L17:
+ 256              		.align	2
+ 257              	.L16:
+ 258 001c 00000000 		.word	speed.0
+ 259 0020 00F00F40 		.word	1074786304
+ 260              		.cfi_endproc
+ 261              	.LFE128:
+ 263              		.section	.text.Set_Sampling_rate_ms,"ax",%progbits
+ 264              		.align	1
+ 265              		.p2align 2,,3
+ 266              		.global	Set_Sampling_rate_ms
+ 267              		.syntax unified
+ 268              		.thumb
+ 269              		.thumb_func
+ 271              	Set_Sampling_rate_ms:
+ 272              	.LVL5:
+ 273              	.LFB129:
+  84:../source/SYSTICK.c **** 
+  85:../source/SYSTICK.c **** void Set_Sampling_rate_ms(uint32_t sr)
+  86:../source/SYSTICK.c **** {
+ 274              		.loc 1 86 1 is_stmt 1 view -0
+ 275              		.cfi_startproc
+ 276              		@ args = 0, pretend = 0, frame = 0
+ 277              		@ frame_needed = 0, uses_anonymous_args = 0
+ 278              		@ link register save eliminated.
+  87:../source/SYSTICK.c **** 	rti_period=PER_ms(sr);
+ 279              		.loc 1 87 2 view .LVU67
+ 280              		.loc 1 87 13 is_stmt 0 view .LVU68
+ 281 0000 024A     		ldr	r2, .L19
+ 282              		.loc 1 87 12 view .LVU69
+ 283 0002 034B     		ldr	r3, .L19+4
+ 284              		.loc 1 87 13 view .LVU70
+ 285 0004 02FB00F0 		mul	r0, r2, r0
+ 286              	.LVL6:
+ 287              		.loc 1 87 12 view .LVU71
+ 288 0008 1860     		str	r0, [r3]
+  88:../source/SYSTICK.c **** }
+ 289              		.loc 1 88 1 view .LVU72
+ 290 000a 7047     		bx	lr
+ 291              	.L20:
+ 292              		.align	2
+ 293              	.L19:
+ 294 000c A0860100 		.word	100000
+ 295 0010 00000000 		.word	rti_period
+ 296              		.cfi_endproc
+ 297              	.LFE129:
+ 299              		.section	.text.Set_Sampling_rate_us,"ax",%progbits
+ 300              		.align	1
+ 301              		.p2align 2,,3
+ 302              		.global	Set_Sampling_rate_us
+ 303              		.syntax unified
+ 304              		.thumb
+ 305              		.thumb_func
+ 307              	Set_Sampling_rate_us:
+ 308              	.LVL7:
+ 309              	.LFB130:
+  89:../source/SYSTICK.c **** 
+  90:../source/SYSTICK.c **** void Set_Sampling_rate_us(uint32_t sr)
+  91:../source/SYSTICK.c **** {
+ 310              		.loc 1 91 1 is_stmt 1 view -0
+ 311              		.cfi_startproc
+ 312              		@ args = 0, pretend = 0, frame = 0
+ 313              		@ frame_needed = 0, uses_anonymous_args = 0
+ 314              		@ link register save eliminated.
+  92:../source/SYSTICK.c **** 	rti_period=PER_us(sr);
+ 315              		.loc 1 92 2 view .LVU74
+ 316              		.loc 1 92 12 is_stmt 0 view .LVU75
+ 317 0000 024B     		ldr	r3, .L22
+ 318              		.loc 1 92 13 view .LVU76
+ 319 0002 6422     		movs	r2, #100
+ 320 0004 02FB00F0 		mul	r0, r2, r0
+ 321              	.LVL8:
+ 322              		.loc 1 92 12 view .LVU77
+ 323 0008 1860     		str	r0, [r3]
+  93:../source/SYSTICK.c **** }
+ 324              		.loc 1 93 1 view .LVU78
+ 325 000a 7047     		bx	lr
+ 326              	.L23:
+ 327              		.align	2
+ 328              	.L22:
+ 329 000c 00000000 		.word	rti_period
+ 330              		.cfi_endproc
+ 331              	.LFE130:
+ 333              		.section	.data.speed.0,"aw"
+ 334              		.align	2
+ 337              	speed.0:
+ 338 0000 88130000 		.word	5000
+ 339              		.section	.data.rti_period,"aw"
+ 340              		.align	2
+ 343              	rti_period:
+ 344 0000 80969800 		.word	10000000
+ 345              		.text
+ 346              	.Letext0:
+ 347              		.file 2 "/usr/local/mcuxpressoide-11.10.0_3148/ide/plugins/com.nxp.mcuxpresso.tools.linux_11.10.0.
+ 348              		.file 3 "/usr/local/mcuxpressoide-11.10.0_3148/ide/plugins/com.nxp.mcuxpresso.tools.linux_11.10.0.
+ 349              		.file 4 "/home/jacoby/Documents/MCUXpresso_11.10.0_3148/DSP_workspace/DSP3/CMSIS/core_cm4.h"
+ 350              		.file 5 "/home/jacoby/Documents/MCUXpresso_11.10.0_3148/DSP_workspace/DSP3/CMSIS/MK64F12.h"
+ 351              		.file 6 "../source/ADC.h"
+ 352              		.file 7 "../source/DAC.h"
+ 353              		.file 8 "../source/ports.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 SYSTICK.c
+     /tmp/ccg4tfqY.s:21     .text.SysTick_Handler:00000000 $t
+     /tmp/ccg4tfqY.s:28     .text.SysTick_Handler:00000000 SysTick_Handler
+     /tmp/ccg4tfqY.s:153    .text.SysTick_Handler:00000064 $d
+     /tmp/ccg4tfqY.s:337    .data.speed.0:00000000 speed.0
+     /tmp/ccg4tfqY.s:166    .text.SysTick_Init:00000000 $t
+     /tmp/ccg4tfqY.s:173    .text.SysTick_Init:00000000 SysTick_Init
+     /tmp/ccg4tfqY.s:208    .text.SysTick_Init:00000018 $d
+     /tmp/ccg4tfqY.s:343    .data.rti_period:00000000 rti_period
+     /tmp/ccg4tfqY.s:213    .text.blink_led:00000000 $t
+     /tmp/ccg4tfqY.s:220    .text.blink_led:00000000 blink_led
+     /tmp/ccg4tfqY.s:258    .text.blink_led:0000001c $d
+     /tmp/ccg4tfqY.s:264    .text.Set_Sampling_rate_ms:00000000 $t
+     /tmp/ccg4tfqY.s:271    .text.Set_Sampling_rate_ms:00000000 Set_Sampling_rate_ms
+     /tmp/ccg4tfqY.s:294    .text.Set_Sampling_rate_ms:0000000c $d
+     /tmp/ccg4tfqY.s:300    .text.Set_Sampling_rate_us:00000000 $t
+     /tmp/ccg4tfqY.s:307    .text.Set_Sampling_rate_us:00000000 Set_Sampling_rate_us
+     /tmp/ccg4tfqY.s:329    .text.Set_Sampling_rate_us:0000000c $d
+     /tmp/ccg4tfqY.s:334    .data.speed.0:00000000 $d
+     /tmp/ccg4tfqY.s:340    .data.rti_period:00000000 $d
+                           .group:00000000 wm4.0.6daa9fc78e4f6e1d52d3883eb654976f
+                           .group:00000000 wm4._newlib_version.h.4.6d111ab2e95434b664b53815e5c8ccba
+                           .group:00000000 wm4.features.h.33.2eefb68b261e70563a8ac654e712169f
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
+                           .group:00000000 wm4.fsl_device_registers.h.32.f10b25a7fd7ad45b9a40904c33f28816
+                           .group:00000000 wm4.MK64F12.h.105.e884e5c80776532d2ec0f5c21e2ea7cb
+                           .group:00000000 wm4.core_cm4.h.42.42f38327ee0970d80f60117e6a3ba2b0
+                           .group:00000000 wm4.cmsis_gcc.h.36.39970cb43ce4b53c82644a1f9bc2eab9
+                           .group:00000000 wm4.core_cm4.h.223.7b48c9958ef5573320c4765074c8b0ce
+                           .group:00000000 wm4.system_MK64F12.h.109.c6d21568e03be21b21c922eb7345d6e3
+                           .group:00000000 wm4.MK64F12.h.475.cafa8e1e521f96f0b72de286863a6df7
+                           .group:00000000 wm4.MK64F12_features.h.92.512cea46d882153168efeec0bc3a9da7
+                           .group:00000000 wm4.hardware.h.27.0531344360c1b4ef1fba1263e2a4c488
+                           .group:00000000 wm4.ADC.h.3.64a3fd64197c482aa3b73f9606ae7049
+                           .group:00000000 wm4.newlib.h.7.74420a2563819a23b01928a4134a16df
+                           .group:00000000 wm4.ieeefp.h.77.5ad60f72ea25fc152400b550ac118212
+                           .group:00000000 wm4.config.h.224.88344135d9de3e7ea139102cd6493448
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.stdio.h.31.7c0e28c411445f3f9c5b11accf882760
+                           .group:00000000 wm4.stddef.h.185.cbb642e1ccd385e8aa504b15cb7fb086
+                           .group:00000000 wm4.cdefs.h.49.70fc7af612f78ddcace70fdd90b5623b
+                           .group:00000000 wm4.stddef.h.39.6817658cc6bc4c7c8354d2009e4a5777
+                           .group:00000000 wm4.stdarg.h.34.3a23a216c0c293b3d2ea2e89281481e6
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.ffae6115d9409cbff6542f042d93715e
+                           .group:00000000 wm4.assert.h.11.db24e541f16414db224bf986d21017e2
+                           .group:00000000 wm4.reent.h.460.dc5a3362e34409fa841b38093e890350
+                           .group:00000000 wm4.stdio.h.67.0cf8a9c281ab0b348aef5c02e7e48825
+                           .group:00000000 wm4.stdio.h.2.4aa87247282eca6c8f36f9de33d8df1a
+                           .group:00000000 wm4.stdio.h.87.408e5d973372126daeef099c555b2753
+                           .group:00000000 wm4.ports.h.9.b2158a29e6c855986eb56054130e967c
+
+UNDEFINED SYMBOLS
+Toggle
+DAC_SetData
+ADC_Start
+ADC_IsReady
+ADC_getData
+dac_out
+adc_in
+nextsample

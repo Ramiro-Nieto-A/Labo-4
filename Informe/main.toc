@@ -15,4 +15,7 @@
 \contentsline {subsubsection}{\numberline {4.1.2}Pasa-bajos | Recuperación de primeros 10 armónicos}{15}{subsubsection.4.1.2}%
 \contentsline {subsubsection}{\numberline {4.1.3}Filtro pasabajos | Recuperación de fundamental}{17}{subsubsection.4.1.3}%
 \contentsline {subsubsection}{\numberline {4.1.4}Simulación}{18}{subsubsection.4.1.4}%
-\contentsline {section}{Referencias}{21}{lstnumber.4.87}%
+\contentsline {subsection}{\numberline {4.2}Análisis de implementación}{20}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}Implementación en punto fijo}{20}{subsubsection.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2}FFT como alternativa}{21}{subsubsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.3}Implementación en MCU}{21}{subsection.4.3}%
